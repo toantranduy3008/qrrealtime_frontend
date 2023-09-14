@@ -1,0 +1,399 @@
+.table-wrapper {
+    /* width: 1230px; */
+    margin: 5px 5px;
+    background: #fff;
+    padding: 10px;	
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+.table-title {
+    padding-bottom: 10px;
+    margin: 0 0 10px;
+}
+.table-title h2 {
+    margin: 6px 0 0;
+    font-size: 22px;
+}
+
+.table-title h5 {
+    margin: 6px 0 0;
+    font-size: 18px;
+}
+
+.table-title .control-col {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.table-title .control-col-r2 {
+    padding-left: 5px;
+    padding-right: 10px;
+}
+
+.table-title .control-col-r3 {
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+.table-title .control-col-l1 {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.table-title .control-col-l2 {
+    padding-left: 10px;
+    padding-right: 5px;
+}
+
+.table-title .control-col-l3 {
+    padding-left: 15px;
+    padding-right: 5px;
+}
+
+.table-title .control-tool, .table-title .form-group .form-control {
+    height: 30px;
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: none;
+    min-width: 30px;
+    border-radius: 10px;
+    line-height: 13px;
+    margin-left: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.table-title .form-group label {
+    font-weight: bold;
+    font-size: 12px;
+    margin-left: 2px;
+    /* padding-left: 5px; */
+    padding-right: 5px;
+}
+
+.table-title .align-right {
+    float: right;
+}
+
+.table-title .align-left {
+    float: left;
+}
+
+.table-title .add-new {
+    float: right;
+    height: 30px;
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: none;
+    /* min-width: 30px; */
+    border-radius: 50px;
+    line-height: 13px;
+    margin-left: 5px;
+}
+.table-title .add-new i {
+    margin-right: 4px;
+}
+
+.normal-font-table tr th, .normal-font-table tr td {
+    white-space: pre;
+}
+
+.small-font-table {
+    table-layout: auto;
+}
+
+.small-font-table tr th, .small-font-table tr td {
+    /* border-color: #e9e9e9; */
+    font-size: 13px;
+    white-space: pre;
+}
+.small-font-table th i {
+    font-size: 13px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+.small-font-table th:last-child {
+    width: 100px;
+}
+.small-font-table td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px;
+    min-width: 5px;
+    font-size: 13px;
+}    
+.small-font-table td a.add {
+    color: #27C46B;
+}
+.small-font-table td a.edit {
+    color: #FFC107;
+}
+.small-font-table td a.delete {
+    color: #E34724;
+}
+
+.small-font-table td i {
+    font-size: 19px;
+}
+.small-font-table td a.add i {
+    font-size: 24px;
+    margin-right: -1px;
+    position: relative;
+    top: 3px;
+}
+.small-font-table td .col {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.small-font-table td .col-value {
+    padding-left: 15px;
+    padding-right: 2px;
+}
+
+.small-font-table td .col-type {
+    padding-left: 2px;
+    padding-right: 15px;
+}
+
+.small-font-table td .form-group {
+    margin-bottom: 0px;
+}
+
+.small-font-table .form-control {
+    height: 24px;
+    font-size: 13px;
+    line-height: 32px;
+    box-shadow: none;
+    border-radius: 2px;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+.small-font-table .form-control.error {
+    border-color: #f50000;
+}
+.small-font-table td .add {
+    display: none;
+}
+
+.normal-font-table td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px;
+    min-width: 5px;
+}
+
+.normal-font-table td .add {
+    display: none;
+}
+
+.normal-font-table td a.add {
+    color: #27C46B;
+}
+.normal-font-table td a.edit {
+    color: #FFC107;
+}
+.normal-font-table td a.delete {
+    color: #E34724;
+}
+
+.normal-font-table .form-control {
+    height: 28px;
+    font-size: 16px;
+    line-height: 32px;
+    box-shadow: none;
+    /* border-radius: 10px; */
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.tiny-font-table {
+    table-layout: auto;
+}
+
+.tiny-font-table tr th, .tiny-font-table tr td {
+    /* border-color: #e9e9e9; */
+    font-size: 10px;
+    white-space: pre;
+}
+.tiny-font-table th i {
+    font-size: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+.tiny-font-table th:last-child {
+    width: 100px;
+}
+.tiny-font-table td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px;
+    min-width: 5px;
+    font-size: 13px;
+}    
+.tiny-font-table td a.add {
+    color: #27C46B;
+}
+.tiny-font-table td a.edit {
+    color: #FFC107;
+}
+
+.tiny-font-table td a.delete {
+    color: #E34724;
+}
+
+.tiny-font-table td a.decline {
+    color: darkgray;
+}
+
+.tiny-font-table td i {
+    font-size: 10px;
+}
+.tiny-font-table td a.add i {
+    font-size: 10px;
+    margin-right: -1px;
+    position: relative;
+    top: 3px;
+}
+.tiny-font-table td .col {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.tiny-font-table td .col-value {
+    padding-left: 5px;
+    padding-right: 2px;
+}
+
+.tiny-font-table td .col-type {
+    padding-left: 2px;
+    padding-right: 5px;
+}
+
+.tiny-font-table td .form-group {
+    margin-bottom: 0px;
+}
+
+.tiny-font-table .form-control {
+    height: 18px;
+    font-size: 10px;
+    line-height: 18px;
+    box-shadow: none;
+    border-radius: 2px;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+.tiny-font-table .form-control.error {
+    border-color: #f50000;
+}
+.tiny-font-table td .add {
+    display: none;
+}
+
+.tiny-font-table tr td.no-wrap-box {
+    white-space: nowrap;
+}
+
+.tiny-font-table tr .summary-row td {
+    background-color: dimgray;
+}
+
+.rpt-wrapper {
+    /* width: 1230px; */
+    margin: 5px 5px;
+    background: #fff;
+    padding: 10px;	
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.rpt-control {
+    padding-bottom: 10px;
+    margin: 0 0 10px;
+}
+
+.rpt-control .control-col {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.rpt-control .control-col-r2 {
+    padding-left: 5px;
+    padding-right: 10px;
+}
+
+.rpt-control .control-col-r3 {
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+.rpt-control .control-col-l1 {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.rpt-control .control-col-l2 {
+    padding-left: 10px;
+    padding-right: 5px;
+}
+
+.rpt-control .control-col-l3 {
+    padding-left: 15px;
+    padding-right: 5px;
+}
+
+.rpt-control .control-tool, .rpt-control .form-group .form-control {
+    height: 30px;
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: none;
+    min-width: 30px;
+    border-radius: 10px;
+    line-height: 13px;
+    margin-left: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.rpt-control .form-group label {
+    font-weight: bold;
+    font-size: 12px;
+    margin-left: 2px;
+    /* padding-left: 5px; */
+    padding-right: 5px;
+}
+
+.rpt-control .align-right {
+    float: right;
+}
+
+.rpt-control .align-left {
+    float: left;
+}
+
+.rpt-wrapper .rpt-page-header {
+    font-size: 14px;
+}
+
+.rpt-wrapper .napas-logo {
+    width: 200px;
+
+}
+
+.rpt-wrapper .rpt-page-header .rpt-page-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.rpt-wrapper .rpt-table-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.modal-tab-show-info {
+    white-space: pre-wrap;
+}
