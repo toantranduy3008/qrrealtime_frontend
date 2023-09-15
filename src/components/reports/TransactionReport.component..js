@@ -41,84 +41,32 @@ function TransactionReport() {
   ]
 
   const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Branch", "Quầy", "Tên khách hàng", "Số tiền", "Trạng thái"]
-  const fakeData = [
+  const dataFake = [
     {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
+      id: 1234,
+      tnxStamp: format(new Date(), 'dd/MM/yyyy HH:mm:ss'),
+      branchName: "Chi nhánh 1",
+      merchantCashierCode: "Quầy 1",
+      accountNo: "123456789",
+      amount: 20000000,
+      responseCode: "00"
     },
     {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "14"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "68"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
+      id: 1234,
+      tnxStamp: format(new Date(), 'dd/MM/yyyy HH:mm:ss'),
+      branchName: "Chi nhánh 1",
+      merchantCashierCode: "Quầy 1",
+      accountNo: "123456789",
+      amount: 20000000,
+      responseCode: "00"
     }
   ]
+
   const sessionUser = AuthService.getCurrentUser()
   const userType = sessionUser ? sessionUser.targetType : 'CASHIER';
 
   const totalPages = 10;
+  const size = 10;
 
   // Call api get data
 
@@ -130,7 +78,7 @@ function TransactionReport() {
   const handleSearch = async () => {
     const paging = {
       page: 0,
-      size: totalPages,
+      size: size,
       sort: 'id, asc'
     }
 
@@ -143,7 +91,16 @@ function TransactionReport() {
     }
 
     const apiUrl = ''
-    const result = await ReportServices.get(apiUrl, paging, filtersInput)
+    ReportServices.get(apiUrl, paging, filtersInput).then(
+      (res) => {
+        const { status, data } = res
+        if (status !== 200) console.log('Có lỗi trong quá trình lấy dữ liệu')
+        const content = data.content;
+        if (content.length === 0) console.log('Không có dữ liệu')
+      }
+    ).catch(
+
+    )
   }
 
   return (
@@ -327,12 +284,7 @@ function TransactionReport() {
               </Row>
 
               {/* Bảng */}
-              <Table bordered hover
-              // striped
-              // hover
-              // responsive
-              // size="sm"
-              >
+              <Table bordered hover>
                 <thead>
                   <tr>
                     {rowHeader.map((row, index) => {
@@ -341,21 +293,19 @@ function TransactionReport() {
                   </tr>
                 </thead>
                 <tbody>
-                  {fakeData.map((item, index) => {
+                  {dataFake.map((item, index) => {
                     return (
                       <tr key={index}>
                         <th>{index + 1}</th>
-                        <td style={{ cursor: "pointer" }}>{item.refNo}</td>
-                        {/* <td style={{ cursor: "pointer" }} onClick={() => goRouteId(item.refNo)}>{item.refNo}</td> */}
-                        {/* <td style={{ cursor: "pointer" }}><Link href="/">{item.refNo}</Link></td> */}
-                        <td>{item.date}</td>
-                        <td>{item.branch}</td>
-                        <td>{item.counter}</td>
-                        <td>{item.customerName}</td>
+                        <td style={{ cursor: "pointer" }}>{item.id}</td>
+                        <td>{item.tnxStamp}</td>
+                        <td>{item.branchName}</td>
+                        <td>{item.merchantCashierCode}</td>
+                        <td>{item.accountNo}</td>
                         <td>{new Intl.NumberFormat('en-US').format(item.amount)}</td>
                         <td>
                           {
-                            item.status === "00" ?
+                            item.responseCode === "00" ?
                               <Badge
                                 color="success"
                                 pill
