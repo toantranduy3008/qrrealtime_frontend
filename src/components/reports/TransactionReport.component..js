@@ -17,10 +17,10 @@ function TransactionReport() {
     BRANCH: ['BRANCH', 'CASHIER'],
     CASHIER: ['CASHIER']
   }
+
+  // Lấy thông tin user từ session storage
   const sessionUser = AuthService.getCurrentUser()
-  const sessionUserType = sessionUser ? sessionUser.targetType : 'CASHIER';
-  const merchantName = sessionUser ? sessionUser.merchantName : 'TEST'
-  const branchName = sessionUser ? sessionUser.branchName : 'TEST'
+  const { targetType, targetId, masterMerchantName, merchantName, branchName, cashierCode } = sessionUser
   const cashierInfo = sessionUser ? sessionUser.cashierCode : { id: 0, cashierCode: "TEST" }
   const rowHeader = ["STT", "", "Thời gian giao dịch", "Branch", "Quầy", "Tài khoản KH", "Số tiền", "Trạng thái"]
   let totalPages = 10;
@@ -46,9 +46,9 @@ function TransactionReport() {
     }
   ]
   // State
-  const [disableMerchant, setDisableMerchant] = useState(userTypes.MERCHANT.includes(sessionUserType))
-  const [disableBranch, setDisableBranch] = useState(userTypes.BRANCH.includes(sessionUserType))
-  const [disableCashier, setDisableCashier] = useState(userTypes.CASHIER.includes(sessionUserType))
+  const [disableMerchant, setDisableMerchant] = useState(userTypes.MERCHANT.includes(targetType))
+  const [disableBranch, setDisableBranch] = useState(userTypes.BRANCH.includes(targetType))
+  const [disableCashier, setDisableCashier] = useState(userTypes.CASHIER.includes(targetType))
   const [status, setStatus] = useState("")
   const [merchantId, setMerchantId] = useState("")
   const [branchId, setBranchId] = useState("")
@@ -57,14 +57,12 @@ function TransactionReport() {
   const [toDate, setToDate] = useState(currentDate)
   const [merchant, setMerchant] = useState([{ code: "", name: merchantName }])
   const [branch, setBranch] = useState([{ code: "", name: branchName }])
-
+  const [cashier, setCashier] = useState([{ code: "", name: cashierCode }])
   const apiList = {
     getBranch: 'api/TblMerchantBranch/branchByMerchant',
     getCashier: `api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`,
     getTransaction: ''
   }
-  // const [cashier, setCashier] = useState([{ code: cashierInfo.id, name: cashierInfo.cashierCode }])
-  const [cashier, setCashier] = useState([{ code: 1, name: "TEST" }])
   const [data, setData] = useState([{
     tnxStamp: "01/01/2020",
     branchName: "Chi nhánh 1",
