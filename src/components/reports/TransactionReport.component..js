@@ -5,145 +5,150 @@ import ReactPaginate from 'react-paginate';
 import format from 'date-fns/format';
 import axios from 'axios';
 import AuthService from '../../services/Auth.service';
-import ServiceAlert from '../../common/ServiceAlert';
 import ReportServices from './ReportServices';
 import authHeader from '../../services/auth-header';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
+
+
 function TransactionReport() {
-  // State
-  const [disableMerchant, setDisableMerchant] = useState(false)
-  const [disableBranch, setDisableBranch] = useState(false)
-  const [disableCashier, setDisableCashier] = useState(false)
-  const [status, setStatus] = useState("")
-  const [merchantId, setMerchantId] = useState()
-  const [cashierId, setCashierId] = useState()
-  const [fromDate, setFromDate] = useState()
-  const [toDate, setToDate] = useState()
+  const userTypes = {
+    MERCHANT: ['MERCHANT', 'BRANCH', 'CASHIER'],
+    BRANCH: ['BRANCH', 'CASHIER'],
+    CASHIER: ['CASHIER']
+  }
+
+  // Lấy thông tin user từ session storage
+  const sessionUser = AuthService.getCurrentUser()
+  const { targetType, targetId, masterMerchantName, merchantName, branchName, cashierCode } = sessionUser
+  const cashierInfo = sessionUser ? sessionUser.cashierCode : { id: 0, cashierCode: "TEST" }
+  const rowHeader = ["STT", "", "Thời gian giao dịch", "Branch", "Quầy", "Tài khoản KH", "Số tiền", "Trạng thái"]
+  let totalPages = 10;
+  const size = 10;
 
 
-  const [merchant, setMerchant] = useState([{ id: 0, name: 'Tất cả' }])
-  const [branch, setBranch] = useState([{ id: 0, name: 'Tất cả' }])
-  const [cashier, setCashier] = useState([{ id: 0, name: 'Tất cả' }])
-  const [data, setData] = useState([])
+  let curr = new Date();
+  curr.setDate(curr.getDate());
+  let currentDate = curr.toISOString().substring(0, 10);
   // Select options
   const transactionStatus = [
     {
       name: "Tất cả",
-      value: ""
+      id: ""
     },
     {
       name: "Thành công",
-      value: "0"
+      id: "0"
     },
     {
       name: "Không thành công",
-      value: "1"
+      id: "1"
     }
   ]
+  // State
+  const [disableMerchant, setDisableMerchant] = useState(userTypes.MERCHANT.includes(targetType))
+  const [disableBranch, setDisableBranch] = useState(userTypes.BRANCH.includes(targetType))
+  const [disableCashier, setDisableCashier] = useState(userTypes.CASHIER.includes(targetType))
+  const [status, setStatus] = useState("")
+  const [merchantId, setMerchantId] = useState("")
+  const [branchId, setBranchId] = useState("")
+  const [cashierId, setCashierId] = useState("")
+  const [fromDate, setFromDate] = useState(currentDate)
+  const [toDate, setToDate] = useState(currentDate)
+  const [merchant, setMerchant] = useState([{ code: "", name: merchantName }])
+  const [branch, setBranch] = useState([{ code: "", name: branchName }])
+  const [cashier, setCashier] = useState([{ code: "", name: cashierCode }])
+  const apiList = {
+    getBranch: 'api/TblMerchantBranch/branchByMerchant',
+    getCashier: `api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`,
+    getTransaction: ''
+  }
+  const [data, setData] = useState([{
+    tnxStamp: "01/01/2020",
+    branchName: "Chi nhánh 1",
+    merchantCashierCode: "01",
+    accountNo: "123456",
+    amount: 200000,
+    responseCode: "68",
+    id: 1
+  }, {
+    tnxStamp: "01/01/2020",
+    branchName: "Chi nhánh 1",
+    merchantCashierCode: "01",
+    accountNo: "123456",
+    amount: 200000,
+    responseCode: "68",
+    id: 2
+  }])
 
-  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Branch", "Quầy", "Tên khách hàng", "Số tiền", "Trạng thái"]
-  const fakeData = [
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "14"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "68"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
-    },
-    {
-      refNo: 123,
-      date: format(new Date(), 'dd/MM/yyyy'),
-      branch: "Chi nhánh 1",
-      counter: "1",
-      customerName: "Trần Duy Toàn",
-      amount: 20000,
-      status: "00"
-    }
-  ]
-  const sessionUser = AuthService.getCurrentUser()
-  const userType = sessionUser ? sessionUser.targetType : 'CASHIER';
-
-  const totalPages = 10;
 
   // Call api get data
 
-  const handleChangeStatus = (e) => {
-    console.log(e.target.value)
-    setStatus(e.target.value);
+  // useEffect(() => {
+  //   // Get list branch
+  //   axios.get(`${apiList.getBranch}?merchantId=${merchantId}`, { headers: authHeader() })
+  //     .then(
+  //       (res) => {
+  //         const { status, data } = res
+  //         if (status !== 200) console.log('Lỗi k lấy được danh sách branch')
+  //         setBranch([...branch, data])
+  //       }
+  //     ).catch((e) => { throw new Error(e) })
+  // }, [])
+
+
+  // useEffect(() => {
+  //   // Get list cashier
+  //   axios.get(`${apiList.getCashier}?branchId=${branchId}`, { headers: authHeader() })
+  //     .then(
+  //       (res) => {
+  //         const { status, data } = res
+  //         if (status !== 200) console.log('Lỗi k lấy được danh sách branch')
+  //         setCashier([...cashier, data])
+  //       }
+  //     ).catch((e) => { throw new Error(e) })
+  // }, [])
+
+  // useEffect(() => {
+  //   // Get transactions
+  //   const paging = {
+  //     page: 0,
+  //     size: size,
+  //     sort: 'id, asc'
+  //   }
+
+  //   const filtersInput = {
+  //     merchantId: merchantId,
+  //     cashierId: cashierId,
+  //     transactionStatus: status,
+  //     fromDate: fromDate,
+  //     toDate: toDate
+  //   }
+
+  //   ReportServices.get(apiList.getTransaction, paging, filtersInput).then(
+  //     (res) => {
+  //       const { status, data } = res
+  //       if (status !== 200) console.log('Có lỗi trong quá trình lấy dữ liệu')
+  //       const content = data.content;
+  //       if (content.length === 0) console.log('Không có dữ liệu')
+  //       setData(content)
+  //     }
+  //   ).catch(
+
+  //   )
+  // }, [])
+
+  const handleChangeMerchant = (e) => { setMerchantId(e.target.value) }
+  const handleChangeBranch = (e) => { setBranchId(e.target.value) }
+  const handleChangeCashier = (e) => { setCashierId(e.target.value) }
+  const handleChangeStatus = (e) => { setStatus(e.target.value) }
+  const handleFromdate = (e) => {
+    setFromDate(e.target.value)
   }
-
+  const handleToDate = (e) => { setToDate(e.target.value) }
   const handleSearch = async () => {
-    const paging = {
-      page: 0,
-      size: totalPages,
-      sort: 'id, asc'
-    }
-
-    const filtersInput = {
-      merchantId: merchantId,
-      cashierId: cashierId,
-      transactionStatus: status,
-      fromDate: fromDate,
-      toDate: toDate
-    }
-
-    const apiUrl = ''
-    const result = await ReportServices.get(apiUrl, paging, filtersInput)
+    console.log(`From Date: ${fromDate}`)
+    console.log(`To Date: ${toDate}`)
   }
 
   return (
@@ -168,8 +173,9 @@ function TransactionReport() {
                         name="select"
                         type="select"
                         disabled={disableMerchant}
+                        defaultValue={merchantId}
                       >
-                        {merchant.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                        {merchant.map((item, index) => <option value={item.code} key={index}>{item.name}</option>)}
                       </Input>
                     </Col>
                   </FormGroup>
@@ -188,8 +194,10 @@ function TransactionReport() {
                         name="select"
                         type="select"
                         disabled={disableBranch}
+                        defaultValue={branchId}
+
                       >
-                        {branch.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                        {branch.map((item, index) => <option value={item.code} key={index}>{item.name}</option>)}
                       </Input>
                     </Col>
                   </FormGroup>
@@ -209,8 +217,9 @@ function TransactionReport() {
                         name="select"
                         type="select"
                         disabled={disableCashier}
+                        defaultValue={cashierId}
                       >
-                        {cashier.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                        {cashier.map((item, index) => <option value={item.code} key={index}>{item.name}</option>)}
                       </Input>
                     </Col>
                   </FormGroup>
@@ -221,17 +230,19 @@ function TransactionReport() {
                 <Col xs={4}>
                   <FormGroup row>
                     <Label
-                      for="exampleEmail"
+                      for="fromDate"
                       sm={4}
                     >
                       Từ ngày
                     </Label>
                     <Col sm={8}>
                       <Input
-                        id="exampleDate"
-                        name="date"
-                        placeholder="date placeholder"
+                        id="fromDate"
+                        name="fromDate"
+                        placeholder="Từ ngày"
                         type="date"
+                        value={fromDate}
+                        onChange={handleFromdate}
                       />
                     </Col>
                   </FormGroup>
@@ -239,17 +250,19 @@ function TransactionReport() {
                 <Col xs={4}>
                   <FormGroup row>
                     <Label
-                      for="exampleEmail"
+                      for="toDate"
                       sm={4}
                     >
                       Đến ngày
                     </Label>
                     <Col sm={8}>
                       <Input
-                        id="exampleDate"
-                        name="date"
-                        placeholder="date placeholder"
+                        id="toDate"
+                        name="toDate"
+                        placeholder="tới ngày"
                         type="date"
+                        value={toDate}
+                        onChange={handleToDate}
                       />
                     </Col>
                   </FormGroup>
@@ -273,7 +286,7 @@ function TransactionReport() {
                       >
                         {transactionStatus.map((s, index) => {
                           return (
-                            <option value={s.value} key={index}>{s.name}</option>
+                            <option value={s.id} key={index}>{s.name}</option>
                           )
                         })}
                       </Input>
@@ -327,12 +340,7 @@ function TransactionReport() {
               </Row>
 
               {/* Bảng */}
-              <Table bordered hover
-              // striped
-              // hover
-              // responsive
-              // size="sm"
-              >
+              <Table bordered hover>
                 <thead>
                   <tr>
                     {rowHeader.map((row, index) => {
@@ -341,21 +349,19 @@ function TransactionReport() {
                   </tr>
                 </thead>
                 <tbody>
-                  {fakeData.map((item, index) => {
+                  {data.map((item, index) => {
                     return (
                       <tr key={index}>
                         <th>{index + 1}</th>
-                        <td style={{ cursor: "pointer" }}>{item.refNo}</td>
-                        {/* <td style={{ cursor: "pointer" }} onClick={() => goRouteId(item.refNo)}>{item.refNo}</td> */}
-                        {/* <td style={{ cursor: "pointer" }}><Link href="/">{item.refNo}</Link></td> */}
-                        <td>{item.date}</td>
-                        <td>{item.branch}</td>
-                        <td>{item.counter}</td>
-                        <td>{item.customerName}</td>
+                        <td style={{ cursor: "pointer" }}><FontAwesomeIcon icon={faCircleInfo} style={{ color: "#4b1dc9", }} /></td>
+                        <td>{item.tnxStamp}</td>
+                        <td>{item.branchName}</td>
+                        <td>{item.merchantCashierCode}</td>
+                        <td>{item.accountNo}</td>
                         <td>{new Intl.NumberFormat('en-US').format(item.amount)}</td>
                         <td>
                           {
-                            item.status === "00" ?
+                            item.responseCode === "00" ?
                               <Badge
                                 color="success"
                                 pill
