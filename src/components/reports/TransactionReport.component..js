@@ -327,7 +327,7 @@ function TransactionReport() {
               </Row>
 
               {/* Bảng */}
-              <Table bordered
+              <Table bordered hover
               // striped
               // hover
               // responsive
@@ -339,6 +339,8 @@ function TransactionReport() {
                       return (<th key={index}>{row}</th>)
                     })}
                   </tr>
+                </thead>
+                <tbody>
                   {fakeData.map((item, index) => {
                     return (
                       <tr key={index}>
@@ -372,7 +374,7 @@ function TransactionReport() {
                       </tr>
                     )
                   })}
-                </thead>
+                </tbody>
               </Table>
             </Card>
           </Col>
