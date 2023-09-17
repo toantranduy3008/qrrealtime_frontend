@@ -19,7 +19,7 @@ function TransactionReport() {
     return `${format(new Date(date), 'dd/MM/yyyy')} ${time}`
   }
 
-  const selectBoxInitialvalue = [{ id: null, name: 'Tất cả' }]
+  const selectBoxInitialvalue = [{ id: "", name: 'Tất cả' }]
   const userTypes = {
     MERCHANT: ['MERCHANT', 'BRANCH', 'CASHIER'],
     BRANCH: ['BRANCH', 'CASHIER'],
@@ -70,6 +70,7 @@ function TransactionReport() {
 
   useEffect(() => {
     if (targetType === 'MERCHANT') {
+      setDisableCashier(true)
       axios.get('/api/TblMerchantBranch/branchByMerchant', { headers: authHeader() })
         .then(
           (res) => {
@@ -84,12 +85,13 @@ function TransactionReport() {
 
   useEffect(() => {
     // Get list cashier
-    if (targetType !== 'CASHIER') {
+    if (targetType !== 'CASHIER' && branchId) {
       axios.get(`/api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`, { headers: authHeader() })
         .then(
           (res) => {
             const listCashier = res.data.length > 0 ? res.data.map((item) => { return { id: item.id, name: item.cashierCode } }) : []
             listCashier.unshift(selectBoxInitialvalue[0])
+            setDisableCashier(false)
             setCashier(listCashier)
           }
         ).catch((e) => { throw new Error(e) })
@@ -134,7 +136,11 @@ function TransactionReport() {
 
   const handleChangePage = (e) => { setPage(e.selected) }
   const handleChangeMerchant = (e) => { setMerchantId(e.target.value) }
-  const handleChangeBranch = (e) => { setBranchId(e.target.value) }
+  const handleChangeBranch = (e) => {
+    // console.log('branch', e.target)
+    setDisableCashier(!e.target.value ? true : false)
+    setBranchId(e.target.value)
+  }
   const handleChangeCashier = (e) => { setCashierId(e.target.value) }
   const handleChangeStatus = (e) => { setStatus(e.target.value) }
   const handleFromdate = (e) => { setFromDate(e.target.value) }
