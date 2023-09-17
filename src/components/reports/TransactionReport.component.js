@@ -52,7 +52,8 @@ function TransactionReport() {
   const curr = new Date();
   curr.setDate(curr.getDate());
   const currentDate = curr.toISOString().substring(0, 10);
-  const [fromDate, setFromDate] = useState(`${currentDate}T00:00`)
+  const firstDateOfMonth = format(curr, 'yyyy-MM-01')
+  const [fromDate, setFromDate] = useState(`${firstDateOfMonth}T00:00`)
   const [toDate, setToDate] = useState(`${currentDate}T23:59`)
   const [page, setPage] = useState(0)
   const [loading, setLoading] = useState(false)
