@@ -8,7 +8,8 @@ import ReportServices from './ReportServices';
 import authHeader from '../../services/auth-header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
-
+import '../../stylesheet/TableControl.css'
+import '../../stylesheet/TextControl.css'
 
 function TransactionReport() {
   const formatDate = (dateTime) => {
@@ -164,7 +165,7 @@ function TransactionReport() {
       <Container fluid>
         <Row>
           <Col>
-            <Card>
+            <Card className='mt-0'>
               <Row>
                 <Col xs={4}>
                   <FormGroup row>
@@ -317,13 +318,10 @@ function TransactionReport() {
           </Col>
 
         </Row>
-      </Container>
 
-      {/* Kết quả */}
-      <Container fluid>
         <Row>
           <Col>
-            <Card>
+            <Card className='mt-0'>
               {/* Phân trang */}
               <Row>
                 <Col xl={4} lg={6} md={8} className="control-col-r3">
@@ -349,7 +347,12 @@ function TransactionReport() {
               </Row>
 
               {/* Bảng */}
-              <Table bordered hover>
+              <Table className="align-items-center small-font-table"
+                bordered
+                striped
+                hover
+                responsive
+              >
                 <thead>
                   <tr>
                     {rowHeader.map((row, index) => {
@@ -385,10 +388,10 @@ function TransactionReport() {
                 </tbody>
               </Table>
             </Card>
-          </Col>
+          </Col >
 
-        </Row>
-      </Container >
+        </Row >
+      </Container>
     </>
 
   )

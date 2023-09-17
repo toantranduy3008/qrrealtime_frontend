@@ -19,6 +19,7 @@ import ServiceAlert from "./common/ServiceAlert";
 
 import FooterComponent from "./components/Footer.component";
 import TransactionReport from "./components/reports/TransactionReport.component";
+// import NapasLogo from '../public/images/napas.svg'
 const arrAdminRoles = ["ROOT", "ADMIN"];
 const arrTechAdminRoles = ["ROOT", "ADMIN", "SENIOR_OPERATOR"];
 const arrBusinessRptRoles = ["ROOT", "ADMIN", "SENIOR_OPERATOR", "KIEM_SOAT", "TRA_SOAT", "SENIOR_BUSINESS"];
@@ -154,7 +155,7 @@ class App extends Component {
 			<div>
 				<Navbar color="dark" dark expand="md">
 					<Link to={""} className="navbar-brand">
-						PIS Portal
+						<img src='/images/napas.svg' alt="Napas" />Merchant
 					</Link>
 					<Nav className="mr-auto" navbar>
 						{showTechAdminBoard && (
