@@ -107,6 +107,7 @@ function TransactionReport() {
 
     const filtersInput = {
       merchantId: merchantId,
+      branchId: branchId,
       cashierId: cashierId,
       status: status,
       dateTimeBegin: fromDate,
@@ -137,8 +138,15 @@ function TransactionReport() {
   const handleChangePage = (e) => { setPage(e.selected) }
   const handleChangeMerchant = (e) => { setMerchantId(e.target.value) }
   const handleChangeBranch = (e) => {
-    // console.log('branch', e.target)
-    setDisableCashier(!e.target.value ? true : false)
+    if (!e.target.value) {
+      // Nếu branch đổi sang tất cả -> set giá trị của cashier sang tất cả
+      setCashierId("")
+      setCashier(selectBoxInitialvalue)
+      setDisableCashier(true)
+    }
+    else {
+      setDisableCashier(false)
+    }
     setBranchId(e.target.value)
   }
   const handleChangeCashier = (e) => { setCashierId(e.target.value) }
@@ -354,7 +362,7 @@ function TransactionReport() {
                     return (
                       <tr key={index}>
                         <th>{index + 1}</th>
-                        <td style={{ cursor: "pointer" }}><FontAwesomeIcon icon={faCircleInfo} style={{ color: "#4b1dc9", }} /></td>
+                        <td style={{ cursor: "pointer" }} className="align-middle text-center no-wrap-box"><FontAwesomeIcon icon={faCircleInfo} style={{ color: "#4b1dc9", }} /></td>
                         <td>{formatDate(item.tnxStamp)}</td>
                         <td>{item.merchantBranchName}</td>
                         <td>{item.merchantCashierCode}</td>
