@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Switch, Route, Link } from "react-router-dom";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import AuthService from "./services/Auth.service";
 
 import Login from "./components/Login.component";
@@ -19,7 +18,7 @@ import EventBus from "./common/EventBus";
 import ServiceAlert from "./common/ServiceAlert";
 
 import FooterComponent from "./components/Footer.component";
-import TransactionReport from "./components/reports/TransactionReport.component.";
+import TransactionReport from "./components/reports/TransactionReport.component";
 const arrAdminRoles = ["ROOT", "ADMIN"];
 const arrTechAdminRoles = ["ROOT", "ADMIN", "SENIOR_OPERATOR"];
 const arrBusinessRptRoles = ["ROOT", "ADMIN", "SENIOR_OPERATOR", "KIEM_SOAT", "TRA_SOAT", "SENIOR_BUSINESS"];
