@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Row, Col, Card, FormGroup, Label, Input, Button, Table, Badge, Spinner } from 'reactstrap'
+import { Container, Row, Col, Card, FormGroup, Label, Input, Button, Table, Badge, Spinner, Alert } from 'reactstrap'
 import ReactPaginate from 'react-paginate';
 import format from 'date-fns/format';
 import axios from 'axios';
@@ -318,81 +318,81 @@ function TransactionReport() {
           </Col>
         </Row>
 
-        <Row>
-          <Col>
-            <Card className='mt-0'>
-              {/* Phân trang */}
-              <Row>
-                <Col xl={4} lg={6} md={8} className="control-col-r3">
+        {totalPage === 0 ? <Alert color="warning">Không tìm thấy kết quả!</Alert> :
+          <Row>
+            <Col>
+              <Card className='mt-0'>
+                {/* Phân trang */}
+                <Row>
+                  <Col xl={4} lg={6} md={8} className="control-col-r3">
+                    <ReactPaginate
+                      previousLabel={'Trước'}
+                      nextLabel={'Sau'}
+                      pageCount={totalPage}
+                      onPageChange={handleChangePage}
+                      pageClassName="page-item"
+                      pageLinkClassName="page-link"
+                      previousClassName="page-item"
+                      previousLinkClassName="page-link"
+                      nextClassName="page-item"
+                      nextLinkClassName="page-link"
+                      breakLabel="..."
+                      breakClassName="page-item"
+                      breakLinkClassName="page-link"
+                      containerClassName="pagination align-right"
+                      activeClassName="active"
+                    />
+                  </Col>
+                </Row>
 
-                  <ReactPaginate
-                    previousLabel={'Trước'}
-                    nextLabel={'Sau'}
-                    pageCount={totalPage}
-                    onPageChange={handleChangePage}
-                    pageClassName="page-item"
-                    pageLinkClassName="page-link"
-                    previousClassName="page-item"
-                    previousLinkClassName="page-link"
-                    nextClassName="page-item"
-                    nextLinkClassName="page-link"
-                    breakLabel="..."
-                    breakClassName="page-item"
-                    breakLinkClassName="page-link"
-                    containerClassName="pagination align-right"
-                    activeClassName="active"
-                  />
-                </Col>
-              </Row>
-
-              {/* Bảng */}
-              <Table className="align-items-center small-font-table"
-                bordered
-                striped
-                hover
-                responsive
-              >
-                <thead>
-                  <tr>
-                    {rowHeader.map((row, index) => {
-                      return (<th key={index}>{row}</th>)
-                    })}
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((item, index) => {
-                    return (
-                      <tr key={index}>
-                        <th>{index + 1}</th>
-                        <td style={{ cursor: "pointer" }} className="align-middle text-center no-wrap-box"><FontAwesomeIcon icon={faCircleInfo} style={{ color: "#4b1dc9", }} /></td>
-                        <td>{formatDate(item.tnxStamp)}</td>
-                        <td>{item.merchantBranchName}</td>
-                        <td>{item.merchantCashierCode}</td>
-                        <td>{item.accountNo}</td>
-                        <td>{new Intl.NumberFormat('en-US').format(item.amount)}</td>
-                        <td>
-                          {
-                            item.responseCode === "00" ?
-                              <Badge color="success" pill >Thành công</Badge>
-                              :
-                              item.responseCode === "68" ?
-                                <Badge color="warning" pill >Timeout</Badge>
+                {/* Bảng */}
+                <Table className="align-items-center small-font-table"
+                  bordered
+                  striped
+                  hover
+                  responsive
+                >
+                  <thead>
+                    <tr>
+                      {rowHeader.map((row, index) => {
+                        return (<th key={index}>{row}</th>)
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <th>{index + 1}</th>
+                          <td style={{ cursor: "pointer" }} className="align-middle text-center no-wrap-box"><FontAwesomeIcon icon={faCircleInfo} style={{ color: "#4b1dc9", }} /></td>
+                          <td>{formatDate(item.tnxStamp)}</td>
+                          <td>{item.merchantBranchName}</td>
+                          <td>{item.merchantCashierCode}</td>
+                          <td>{item.accountNo}</td>
+                          <td>{new Intl.NumberFormat('en-US').format(item.amount)}</td>
+                          <td>
+                            {
+                              item.responseCode === "00" ?
+                                <Badge color="success" pill >Thành công</Badge>
                                 :
-                                <Badge color="danger" pill >Không thành công</Badge>
-                          }
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </Table>
-            </Card>
-          </Col >
+                                item.responseCode === "68" ?
+                                  <Badge color="warning" pill >Timeout</Badge>
+                                  :
+                                  <Badge color="danger" pill >Không thành công</Badge>
+                            }
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </Table>
+              </Card>
+            </Col >
 
-        </Row >
+          </Row >
+        }
       </Container>
     </>
-
   )
 }
 
