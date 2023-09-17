@@ -154,9 +154,12 @@ class App extends Component {
 		return (
 			<div>
 				<Navbar color="dark" dark expand="md">
-					<Link to={""} className="navbar-brand">
-						<img src='/images/napas.svg' alt="Napas" />Merchant
-					</Link>
+					<div>
+						<Link to={""} className="navbar-brand">
+							<img src='/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
+						</Link>
+					</div>
+
 					<Nav className="mr-auto" navbar>
 						{showTechAdminBoard && (
 							<>

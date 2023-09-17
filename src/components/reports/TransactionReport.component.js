@@ -316,7 +316,6 @@ function TransactionReport() {
               </Row>
             </Card>
           </Col>
-
         </Row>
 
         <Row>
