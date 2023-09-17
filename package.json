@@ -45,7 +45,7 @@
     "eject": "react-scripts eject",
     "serve": "serve build"
   },
-  "proxy": "https://localhost:8099/",
+  "proxy": "https://172.30.17.115:8080/",
   "eslintConfig": {
     "extends": "react-app"
   },

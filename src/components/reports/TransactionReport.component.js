@@ -19,7 +19,7 @@ function TransactionReport() {
     return `${format(new Date(date), 'dd/MM/yyyy')} ${time}`
   }
 
-  const selectBoxInitialvalue = [{ code: null, name: 'Tất cả' }]
+  const selectBoxInitialvalue = [{ id: null, name: 'Tất cả' }]
   const userTypes = {
     MERCHANT: ['MERCHANT', 'BRANCH', 'CASHIER'],
     BRANCH: ['BRANCH', 'CASHIER'],
@@ -73,9 +73,9 @@ function TransactionReport() {
       axios.get('/api/TblMerchantBranch/branchByMerchant', { headers: authHeader() })
         .then(
           (res) => {
-            const { status, data } = res
-            if (status !== 200) console.log('Lỗi k lấy được danh sách branch')
-            setBranch([...selectBoxInitialvalue, data])
+            const listBranch = res.data.length > 0 ? res.data.map((item) => { return { id: item.id, name: item.branchName } }) : []
+            listBranch.unshift(selectBoxInitialvalue[0])
+            setBranch(listBranch)
           }
         ).catch((e) => { throw new Error(e) })
     }
@@ -88,9 +88,9 @@ function TransactionReport() {
       axios.get(`/api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`, { headers: authHeader() })
         .then(
           (res) => {
-            const { status, data } = res
-            if (status !== 200) console.log('Lỗi k lấy được danh sách branch')
-            setCashier([...selectBoxInitialvalue, data])
+            const listCashier = res.data.length > 0 ? res.data.map((item) => { return { id: item.id, name: item.cashierCode } }) : []
+            listCashier.unshift(selectBoxInitialvalue[0])
+            setCashier(listCashier)
           }
         ).catch((e) => { throw new Error(e) })
     }
@@ -169,7 +169,7 @@ function TransactionReport() {
                         defaultValue={merchantId}
                         onChange={handleChangeMerchant}
                       >
-                        {merchant.map((item, index) => <option value={item.code} key={index}>{item.name}</option>)}
+                        {merchant.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
                       </Input>
                     </Col>
                   </FormGroup>
@@ -191,7 +191,7 @@ function TransactionReport() {
                         defaultValue={branchId}
                         onChange={handleChangeBranch}
                       >
-                        {branch.map((item, index) => <option value={item.code} key={index}>{item.name}</option>)}
+                        {branch.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
                       </Input>
                     </Col>
                   </FormGroup>
@@ -214,7 +214,7 @@ function TransactionReport() {
                         defaultValue={cashierId}
                         onChange={handleChangeCashier}
                       >
-                        {cashier.map((item, index) => <option value={item.code} key={index}>{item.name}</option>)}
+                        {cashier.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
                       </Input>
                     </Col>
                   </FormGroup>
