@@ -155,7 +155,7 @@ class App extends Component {
 			<div>
 				<Navbar color="dark" dark expand="md">
 					<div>
-						<Link to={""} className="navbar-brand">
+						<Link to={"/reports/transactionReport"} className="navbar-brand">
 							<img src='/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
 						</Link>
 					</div>
@@ -181,7 +181,7 @@ class App extends Component {
 						{currentUser && (
 							<>
 								{/* Tra cứu */}
-								<UncontrolledDropdown nav inNavbar>
+								{/* <UncontrolledDropdown nav inNavbar>
 									<DropdownToggle nav caret>
 										Tra cứu
 									</DropdownToggle>
@@ -192,7 +192,7 @@ class App extends Component {
 											</Link>
 										</DropdownItem>
 									</DropdownMenu>
-								</UncontrolledDropdown>
+								</UncontrolledDropdown> */}
 
 								{/* Báo cáo */}
 								<UncontrolledDropdown nav inNavbar>
