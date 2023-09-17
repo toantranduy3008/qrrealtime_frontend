@@ -247,7 +247,7 @@ class App extends Component {
 					<PrivateRoute exact path="/admin/profile" component={Profile} />
 
 
-					<Route path="/reports/transactionReport"
+					<PrivateRoute path="/reports/transactionReport"
 						component={TransactionReport}
 						pageTitle="Lịch sử tương tác API"
 					/>

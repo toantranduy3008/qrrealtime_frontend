@@ -18,7 +18,7 @@ function TransactionReport() {
     const time = dateTime.split(" ")[1]
     return `${format(new Date(date), 'dd/MM/yyyy')} ${time}`
   }
-  console.log(`Date format: ${format(new Date("2023-09-13"), 'dd/MM/yyyy')}`)
+
   const selectBoxInitialvalue = [{ code: null, name: 'Tất cả' }]
   const userTypes = {
     MERCHANT: ['MERCHANT', 'BRANCH', 'CASHIER'],
@@ -70,7 +70,7 @@ function TransactionReport() {
 
   useEffect(() => {
     if (targetType === 'MERCHANT') {
-      axios.get('api/TblMerchantBranch/branchByMerchant', { headers: authHeader() })
+      axios.get('/api/TblMerchantBranch/branchByMerchant', { headers: authHeader() })
         .then(
           (res) => {
             const { status, data } = res
@@ -85,7 +85,7 @@ function TransactionReport() {
   useEffect(() => {
     // Get list cashier
     if (targetType !== 'CASHIER') {
-      axios.get(`api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`, { headers: authHeader() })
+      axios.get(`/api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`, { headers: authHeader() })
         .then(
           (res) => {
             const { status, data } = res
@@ -96,24 +96,23 @@ function TransactionReport() {
     }
   }, [branchId])
 
-  useEffect(() => {
-    // Get transactions
+  const getTransactions = () => {
     const paging = {
       page: page,
       size: size,
-      sort: 'id, asc'
+      sort: 'id,asc'
     }
 
     const filtersInput = {
       merchantId: merchantId,
       cashierId: cashierId,
-      transactionStatus: status,
-      fromDate: fromDate,
-      toDate: toDate
+      status: status,
+      dateTimeBegin: fromDate,
+      dateTimeEnd: toDate
     }
 
     setLoading(true)
-    ReportServices.get(`api/HisPayment/`, paging, filtersInput).then(
+    ReportServices.get(`/api/HisPayment/`, paging, filtersInput).then(
       (res) => {
         const { status, data } = res
         if (status !== 200) console.log('Có lỗi trong quá trình lấy dữ liệu')
@@ -127,6 +126,10 @@ function TransactionReport() {
     ).finally(
       setLoading(false)
     )
+  }
+  useEffect(() => {
+    // Get transactions
+    getTransactions()
   }, [page])
 
   const handleChangePage = (e) => { setPage(e.selected) }
@@ -137,7 +140,7 @@ function TransactionReport() {
   const handleFromdate = (e) => { setFromDate(e.target.value) }
   const handleToDate = (e) => { setToDate(e.target.value) }
   const handleSearch = () => {
-
+    getTransactions()
   }
 
   if (loading) return <Spinner>Loading....</Spinner>
@@ -164,6 +167,7 @@ function TransactionReport() {
                         type="select"
                         disabled={disableMerchant}
                         defaultValue={merchantId}
+                        onChange={handleChangeMerchant}
                       >
                         {merchant.map((item, index) => <option value={item.code} key={index}>{item.name}</option>)}
                       </Input>
@@ -185,6 +189,7 @@ function TransactionReport() {
                         type="select"
                         disabled={disableBranch}
                         defaultValue={branchId}
+                        onChange={handleChangeBranch}
                       >
                         {branch.map((item, index) => <option value={item.code} key={index}>{item.name}</option>)}
                       </Input>
@@ -207,6 +212,7 @@ function TransactionReport() {
                         type="select"
                         disabled={disableCashier}
                         defaultValue={cashierId}
+                        onChange={handleChangeCashier}
                       >
                         {cashier.map((item, index) => <option value={item.code} key={index}>{item.name}</option>)}
                       </Input>
@@ -229,7 +235,7 @@ function TransactionReport() {
                         id="fromDate"
                         name="fromDate"
                         placeholder="Từ ngày"
-                        type="date"
+                        type="datetime-local"
                         value={fromDate}
                         onChange={handleFromdate}
                       />
@@ -249,7 +255,7 @@ function TransactionReport() {
                         id="toDate"
                         name="toDate"
                         placeholder="tới ngày"
-                        type="date"
+                        type="datetime-local"
                         value={toDate}
                         onChange={handleToDate}
                       />
