@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Suspense } from 'react'
+import { Switch, Route, Link } from "react-router-dom";
 import { Container, Row, Col, Card, FormGroup, Label, Input, Button, Table, Badge, Spinner, Alert } from 'reactstrap'
 import ReactPaginate from 'react-paginate';
 import format from 'date-fns/format';
@@ -12,17 +13,9 @@ import '../../stylesheet/TableControl.css'
 import '../../stylesheet/TextControl.css'
 
 function TransactionReport() {
-  const formatDate = (dateTime) => {
-    //"2023-09-13 16:47:20" -> 13-09-2023 16:47:20
-    if (!dateTime) return ""
-    const date = dateTime.split(" ")[0]
-    const time = dateTime.split(" ")[1]
-    return `${format(new Date(date), 'dd/MM/yyyy')} ${time}`
-  }
-
   const selectBoxInitialvalue = [{ id: "", name: 'Tất cả' }]
   const userTypes = {
-    MERCHANT: ['MERCHANT', 'BRANCH', 'CASHIER'],
+    MERCHANT: ['PERSONAL', 'MERCHANT', 'BRANCH', 'CASHIER'],
     BRANCH: ['BRANCH', 'CASHIER'],
     CASHIER: ['CASHIER']
   }
@@ -40,19 +33,20 @@ function TransactionReport() {
       id: "FAILURE"
     },
     {
-      name: "Timeout",
+      name: "Đang xử lý",
       id: "TIMEOUT"
     }
   ]
 
   const sessionUser = AuthService.getCurrentUser()
   const { targetType, merchantName, branchName, cashierCode } = sessionUser
-  const rowHeader = ["STT", "", "Thời gian giao dịch", "Branch", "Quầy", "Tài khoản KH", "Số tiền", "Trạng thái"]
+  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Branch", "Quầy", "Tài khoản KH", "Số tiền", "Trạng thái"]
   const size = 10;
   const curr = new Date();
   curr.setDate(curr.getDate());
   const currentDate = curr.toISOString().substring(0, 10);
   const firstDateOfMonth = format(curr, 'yyyy-MM-01')
+  const [personal, setPersonal] = useState(targetType === 'PERSONAL')
   const [fromDate, setFromDate] = useState(`${firstDateOfMonth}T00:00`)
   const [toDate, setToDate] = useState(`${currentDate}T23:59`)
   const [page, setPage] = useState(0)
@@ -167,8 +161,8 @@ function TransactionReport() {
             <Col>
               <Card className='mt-0'>
                 <Row>
-                  <Col xs={4}>
-                    <FormGroup row>
+                  <Col xs={4} >
+                    <FormGroup row style={{ alignItems: 'center' }}>
                       <Label
                         for="exampleEmail"
                         sm={4}
@@ -189,56 +183,57 @@ function TransactionReport() {
                       </Col>
                     </FormGroup>
                   </Col>
-                  <Col xs={4}>
-                    <FormGroup row>
-                      <Label
-                        for="exampleEmail"
-                        sm={4}
-                      >
-                        Branch
-                      </Label>
-                      <Col sm={8}>
-                        <Input
-                          id="exampleSelect"
-                          name="select"
-                          type="select"
-                          disabled={disableBranch}
-                          defaultValue={branchId}
-                          onChange={handleChangeBranch}
-                        >
-                          {branch.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
-                        </Input>
+                  {!personal ?
+                    <>
+                      <Col xs={4}>
+                        <FormGroup row style={{ alignItems: 'center' }}>
+                          <Label
+                            for="exampleEmail"
+                            sm={4}
+                          >
+                            Branch
+                          </Label>
+                          <Col sm={8}>
+                            <Input
+                              id="exampleSelect"
+                              name="select"
+                              type="select"
+                              disabled={disableBranch}
+                              defaultValue={branchId}
+                              onChange={handleChangeBranch}
+                            >
+                              {branch.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                            </Input>
+                          </Col>
+                        </FormGroup>
                       </Col>
-                    </FormGroup>
-                  </Col>
-                  <Col xs={4}>
-                    <FormGroup row>
-                      <Label
-                        for="exampleEmail"
-                        sm={4}
-                      >
-                        Cashier
-                      </Label>
+                      <Col xs={4}>
+                        <FormGroup row style={{ alignItems: 'center' }}>
+                          <Label
+                            for="exampleEmail"
+                            sm={4}
+                          >
+                            Cashier
+                          </Label>
 
-                      <Col sm={8}>
-                        <Input
-                          id="exampleSelect"
-                          name="select"
-                          type="select"
-                          disabled={disableCashier}
-                          defaultValue={cashierId}
-                          onChange={handleChangeCashier}
-                        >
-                          {cashier.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
-                        </Input>
+                          <Col sm={8}>
+                            <Input
+                              id="exampleSelect"
+                              name="select"
+                              type="select"
+                              disabled={disableCashier}
+                              defaultValue={cashierId}
+                              onChange={handleChangeCashier}
+                            >
+                              {cashier.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                            </Input>
+                          </Col>
+                        </FormGroup>
                       </Col>
-                    </FormGroup>
-                  </Col>
-                </Row>
-
-                <Row>
+                    </> : <></>
+                  }
                   <Col xs={4}>
-                    <FormGroup row>
+                    <FormGroup row style={{ alignItems: 'center' }}>
                       <Label
                         for="fromDate"
                         sm={4}
@@ -258,7 +253,7 @@ function TransactionReport() {
                     </FormGroup>
                   </Col>
                   <Col xs={4}>
-                    <FormGroup row>
+                    <FormGroup row style={{ alignItems: 'center' }}>
                       <Label
                         for="toDate"
                         sm={4}
@@ -278,7 +273,7 @@ function TransactionReport() {
                     </FormGroup>
                   </Col>
                   <Col xs={4}>
-                    <FormGroup row>
+                    <FormGroup row style={{ alignItems: 'center' }}>
                       <Label
                         for="exampleEmail"
                         sm={4}
@@ -364,8 +359,8 @@ function TransactionReport() {
                         return (
                           <tr key={index}>
                             <th>{index + 1}</th>
-                            <td style={{ cursor: "pointer" }} className="align-middle text-center no-wrap-box"><FontAwesomeIcon icon={faCircleInfo} style={{ color: "#4b1dc9", }} /></td>
-                            <td>{formatDate(item.tnxStamp)}</td>
+                            <td style={{ cursor: "pointer" }} className="align-middle no-wrap-box"><Link >{item.paymentReference.substring(0, 10).concat('...')}</Link></td>
+                            <td>{item.tnxStamp}</td>
                             <td>{item.merchantBranchName}</td>
                             <td>{item.merchantCashierCode}</td>
                             <td>{item.accountNo}</td>
@@ -376,7 +371,7 @@ function TransactionReport() {
                                   <Badge color="success" pill >Thành công</Badge>
                                   :
                                   item.responseCode === "68" ?
-                                    <Badge color="warning" pill >Timeout</Badge>
+                                    <Badge color="warning" pill >Đang xử lý</Badge>
                                     :
                                     <Badge color="danger" pill >Không thành công</Badge>
                               }
