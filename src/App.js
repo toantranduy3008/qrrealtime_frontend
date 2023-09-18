@@ -153,7 +153,7 @@ class App extends Component {
 
 		return (
 			<div>
-				<Navbar color="dark" dark expand="md">
+				<Navbar expand="md">
 					<div>
 						<Link to={"/reports/transactionReport"} className="navbar-brand">
 							<img src='/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
@@ -161,7 +161,7 @@ class App extends Component {
 					</div>
 
 					<Nav className="mr-auto" navbar>
-						{showTechAdminBoard && (
+						{/* {showTechAdminBoard && (
 							<>
 								<UncontrolledDropdown nav inNavbar>
 									<DropdownToggle nav caret>
@@ -176,7 +176,7 @@ class App extends Component {
 									</DropdownMenu>
 								</UncontrolledDropdown>
 							</>
-						)}
+						)} */}
 
 						{currentUser && (
 							<>
