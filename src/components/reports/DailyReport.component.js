@@ -8,13 +8,13 @@ import AuthService from '../../services/Auth.service';
 import ReportServices from './ReportServices';
 import authHeader from '../../services/auth-header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
+import { faCircleInfo, faFileExcel } from '@fortawesome/free-solid-svg-icons'
 import '../../stylesheet/TableControl.css'
 import '../../stylesheet/TextControl.css'
-import { TransactionDetailModal } from './ReportModal.component';
 
-function TransactionReport() {
+function DailyReport() {
   const selectBoxInitialvalue = [{ id: "", name: 'Tất cả' }]
+  const reportTypes = [{}]
   const userTypes = {
     MERCHANT: ['PERSONAL', 'MERCHANT', 'BRANCH', 'CASHIER'],
     BRANCH: ['BRANCH', 'CASHIER'],
@@ -41,7 +41,7 @@ function TransactionReport() {
 
   const sessionUser = AuthService.getCurrentUser()
   const { targetType, merchantName, branchName, cashierCode } = sessionUser
-  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Chi nhánh", "Quầy", "Ngân hàng phát lệnh", "Số tiền", "Trạng thái"]
+  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Branch", "Quầy", "Ngân hàng phát lệnh", "Số tiền", "Trạng thái"]
   const size = 10;
   const curr = new Date();
   curr.setDate(curr.getDate());
@@ -64,12 +64,8 @@ function TransactionReport() {
   const [disableCashier, setDisableCashier] = useState(userTypes.CASHIER.includes(targetType))
   const [status, setStatus] = useState("")
   const [data, setData] = useState([])
-  const [openModal, setOpenModal] = useState(false)
-  const [modalData, setModalData] = useState({})
-  const handleOpenModal = (data) => {
-    setModalData({ ...data, merchantName: merchantName })
-    setOpenModal(!openModal)
-  }
+  const [reportType, setReportType] = useState(reportTypes)
+  const [reportTypeId, setReportTypeId] = useState("")
   useEffect(() => {
     if (targetType === 'MERCHANT') {
       setDisableCashier(true)
@@ -155,6 +151,7 @@ function TransactionReport() {
   const handleChangeStatus = (e) => { setStatus(e.target.value) }
   const handleFromdate = (e) => { setFromDate(e.target.value) }
   const handleToDate = (e) => { setToDate(e.target.value) }
+  const handleChangeReport = (e) => { setReportTypeId(e.target.value) }
   const handleSearch = () => { getTransactions() }
 
   if (loading) return <Spinner />
@@ -197,7 +194,7 @@ function TransactionReport() {
                             for="exampleEmail"
                             sm={4}
                           >
-                            Branch
+                            Chi nhánh
                           </Label>
                           <Col sm={8}>
                             <Input
@@ -219,7 +216,7 @@ function TransactionReport() {
                             for="exampleEmail"
                             sm={4}
                           >
-                            Cashier
+                            Quầy
                           </Label>
 
                           <Col sm={8}>
@@ -304,16 +301,42 @@ function TransactionReport() {
                       </Col>
                     </FormGroup>
                   </Col>
+
+                  <Col xs={4}>
+                    <FormGroup row style={{ alignItems: 'center' }}>
+                      <Label
+                        for="exampleEmail"
+                        sm={4}
+                      >
+                        Loại báo cáo
+                      </Label>
+
+                      <Col sm={8}>
+                        <Input
+                          id="statusSelect"
+                          name="statusSelect"
+                          type="select"
+                          value={reportTypeId}
+                          onChange={handleChangeReport}
+                        >
+                          {reportTypes.map((s, index) => {
+                            return (
+                              <option value={s.id} key={index}>{s.name}</option>
+                            )
+                          })}
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                  </Col>
                 </Row>
 
                 <Row>
-                  <Col xs={2}>
-                    <Button
-                      color="primary"
-                      onClick={handleSearch}
-                    >
-                      Tìm kiếm
-                    </Button></Col>
+                  <Col xs={1} sm={1}>
+                    <Button color="primary" onClick={handleSearch} >Tìm kiếm</Button>
+                  </Col>
+                  <Col xs={1} sm={1}>
+                    <Button color="success" onClick={handleSearch} >Export <span><FontAwesomeIcon icon={faFileExcel} /></span></Button>
+                  </Col>
                 </Row>
               </Card>
             </Col>
@@ -365,11 +388,11 @@ function TransactionReport() {
                         return (
                           <tr key={index}>
                             <th>{index + 1}</th>
-                            <td style={{ cursor: "pointer", color: "blue" }} className="align-middle no-wrap-box" onClick={() => handleOpenModal(item)}>{item.paymentReference.substring(0, 10).concat('...')}</td>
+                            <td style={{ cursor: "pointer" }} className="align-middle no-wrap-box"><Link >{item.paymentReference.substring(0, 10).concat('...')}</Link></td>
                             <td>{item.tnxStamp}</td>
                             <td>{item.merchantBranchName}</td>
                             <td>{item.merchantCashierCode}</td>
-                            <td>{item.acqName}</td>
+                            <td>{item.accountNo}</td>
                             <td>{new Intl.NumberFormat('en-US').format(item.amount)}</td>
                             <td>
                               {
@@ -395,10 +418,8 @@ function TransactionReport() {
         </Container>
       </Suspense>
 
-      <TransactionDetailModal isOpen={openModal} toggle={handleOpenModal} data={modalData} />
     </>
-
   )
 }
 
-export default TransactionReport
+export default DailyReport

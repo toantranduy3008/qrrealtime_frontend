@@ -19,7 +19,7 @@ import ServiceAlert from "./common/ServiceAlert";
 
 import FooterComponent from "./components/Footer.component";
 import TransactionReport from "./components/reports/TransactionReport.component";
-// import NapasLogo from '../public/images/napas.svg'
+import DailyReport from "./components/reports/DailyReport.component";
 const arrAdminRoles = ["ROOT", "ADMIN"];
 const arrTechAdminRoles = ["ROOT", "ADMIN", "SENIOR_OPERATOR"];
 const arrBusinessRptRoles = ["ROOT", "ADMIN", "SENIOR_OPERATOR", "KIEM_SOAT", "TRA_SOAT", "SENIOR_BUSINESS"];
@@ -201,8 +201,13 @@ class App extends Component {
 									</DropdownToggle>
 									<DropdownMenu className="bg-dark">
 										<DropdownItem className="bg-dark">
-											<Link to={"/reports/transactionReport"} className="nav-link">
-												Transaction Report
+											<Link to={"/reports/transactions"} className="nav-link">
+												Tìm kiếm giao dịch
+											</Link>
+										</DropdownItem>
+										<DropdownItem className="bg-dark">
+											<Link to={"/reports/daily-report"} className="nav-link">
+												Báo cáo hàng ngày
 											</Link>
 										</DropdownItem>
 									</DropdownMenu>
@@ -251,9 +256,13 @@ class App extends Component {
 					<PrivateRoute exact path="/admin/profile" component={Profile} />
 
 
-					<PrivateRoute path="/reports/transactionReport"
+					<PrivateRoute path="/reports/transactions"
 						component={TransactionReport}
-						pageTitle="Lịch sử tương tác API"
+						pageTitle="Tìm kiếm giao dịch"
+					/>
+					<PrivateRoute path="/reports/daily-report"
+						component={DailyReport}
+						pageTitle="Báo cáo hàng ngày"
 					/>
 
 				</Switch>

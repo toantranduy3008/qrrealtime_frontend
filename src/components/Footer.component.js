@@ -18,8 +18,9 @@ class Footer extends Component {
     render() {
         return (
             // <div class="navbar fixed-bottom">
-            <footer id="sticky-footer" className="flex-shrink-0 py-1 bg-dark text-white-50 fixed-bottom">
-                <Container className="text-center" style={{fontSize: '10px'}}>
+            <footer id="sticky-footer" className="flex-shrink-0 py-1 bg-info text-white fixed-bottom">
+                <Container className="text-center" style={{ fontSize: '10px' }}>
+                    Powered by Napas
                 </Container>
             </footer>
             // </div>
