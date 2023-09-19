@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from '../common/AuthHeader';
 
-const API_URL = '/api/user/';
+const API_URL = './api/user/';
 
 class UserService {
   register(fullName, username, email, role, password) {

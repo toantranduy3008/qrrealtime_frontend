@@ -155,8 +155,8 @@ class App extends Component {
 			<div>
 				<Navbar expand="md">
 					<div>
-						<Link to={"/reports/transactionReport"} className="navbar-brand">
-							<img src='/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
+						<Link to={"/merchantweb/reports/transactionReport"} className="navbar-brand">
+							<img src='/merchantweb/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
 						</Link>
 					</div>
 
@@ -201,12 +201,12 @@ class App extends Component {
 									</DropdownToggle>
 									<DropdownMenu className="bg-dark">
 										<DropdownItem className="bg-dark">
-											<Link to={"/reports/transactions"} className="nav-link">
+											<Link to={"/merchantweb/merchant/reports/transactions"} className="nav-link">
 												Tìm kiếm giao dịch
 											</Link>
 										</DropdownItem>
 										<DropdownItem className="bg-dark">
-											<Link to={"/reports/daily-report"} className="nav-link">
+											<Link to={"/merchantweb/merchant/reports/daily-report"} className="nav-link">
 												Báo cáo hàng ngày
 											</Link>
 										</DropdownItem>
@@ -251,16 +251,16 @@ class App extends Component {
 
 				{/* <Container fluid className="mt-4"> */}
 				<Switch>
-					<PrivateRoute exact path={["/", "/home"]} component={Home} />
-					<Route exact path="/login" component={Login} />
-					<PrivateRoute exact path="/admin/profile" component={Profile} />
+					<PrivateRoute exact path={["/merchantweb/", "/merchantweb/home"]} component={Home} />
+					<Route exact path="/merchantweb/login" component={Login} />
+					<PrivateRoute exact path="/merchantweb/merchant/profile" component={Profile} />
 
 
-					<PrivateRoute path="/reports/transactions"
+					<PrivateRoute path="/merchantweb/merchant/reports/transactions"
 						component={TransactionReport}
 						pageTitle="Tìm kiếm giao dịch"
 					/>
-					<PrivateRoute path="/reports/daily-report"
+					<PrivateRoute path="/merchantweb/merchant/reports/daily-report"
 						component={DailyReport}
 						pageTitle="Báo cáo hàng ngày"
 					/>

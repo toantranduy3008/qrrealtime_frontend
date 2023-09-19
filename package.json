@@ -2,6 +2,7 @@
   "name": "pis-portal-frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/merchantweb",
   "dependencies": {
     "@cyntler/react-doc-viewer": "^1.13.0",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
@@ -45,7 +46,7 @@
     "eject": "react-scripts eject",
     "serve": "serve build"
   },
-  "proxy": "https://172.30.17.115:8080/",
+  "proxy": "https://172.30.17.115:8084/",
   "eslintConfig": {
     "extends": "react-app"
   },

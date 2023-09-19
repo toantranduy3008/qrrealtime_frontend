@@ -4,7 +4,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
     const { paymentReference, tnxStamp, merchantName, merchantBranchName, merchantCashierCode, acqName, cardNo, addInfo, amount, ibftInfo, responseCode } = data
     return (
         <>
-            <Modal isOpen={isOpen} toggle={toggle} size='lg' scrollable={true}>
+            <Modal isOpen={isOpen} toggle={toggle} size='lg' centered scrollable={true}>
                 <ModalHeader toggle={toggle}>Thông tin giao dịch</ModalHeader>
                 <ModalBody>
                     <Container fluid>

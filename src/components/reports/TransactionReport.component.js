@@ -73,7 +73,7 @@ function TransactionReport() {
   useEffect(() => {
     if (targetType === 'MERCHANT') {
       setDisableCashier(true)
-      axios.get('/api/TblMerchantBranch/branchByMerchant', { headers: authHeader() })
+      axios.get('/merchantweb/api/TblMerchantBranch/branchByMerchant', { headers: authHeader() })
         .then(
           (res) => {
             const listBranch = res.data.length > 0 ? res.data.map((item) => { return { id: item.id, name: item.branchName } }) : []
@@ -88,7 +88,7 @@ function TransactionReport() {
   useEffect(() => {
     // Get list cashier
     if (targetType !== 'CASHIER' && branchId) {
-      axios.get(`/api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`, { headers: authHeader() })
+      axios.get(`/merchantweb/api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`, { headers: authHeader() })
         .then(
           (res) => {
             const listCashier = res.data.length > 0 ? res.data.map((item) => { return { id: item.id, name: item.cashierCode } }) : []
@@ -117,7 +117,7 @@ function TransactionReport() {
     }
 
     setLoading(true)
-    ReportServices.get(`/api/HisPayment/`, paging, filtersInput).then(
+    ReportServices.get(`/merchantweb/api/HisPayment/`, paging, filtersInput).then(
       (res) => {
         const { status, data } = res
         if (status !== 200) console.log('Có lỗi trong quá trình lấy dữ liệu')
@@ -167,15 +167,10 @@ function TransactionReport() {
             <Col>
               <Card className='mt-0'>
                 <Row>
-                  <Col xs={4} >
+                  <Col xs={12} sm={12} md={4} lg={4}>
                     <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="exampleEmail"
-                        sm={4}
-                      >
-                        Merchant
-                      </Label>
-                      <Col sm={8}>
+                      <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Merchant</Label>
+                      <Col sm={8} xs={8} md={7} lg={8}>
                         <Input
                           id="exampleSelect"
                           name="select"
@@ -191,15 +186,10 @@ function TransactionReport() {
                   </Col>
                   {!personal ?
                     <>
-                      <Col xs={4}>
+                      <Col xs={12} sm={12} md={4} lg={4}>
                         <FormGroup row style={{ alignItems: 'center' }}>
-                          <Label
-                            for="exampleEmail"
-                            sm={4}
-                          >
-                            Branch
-                          </Label>
-                          <Col sm={8}>
+                          <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Branch</Label>
+                          <Col sm={8} xs={8} md={7} lg={8}>
                             <Input
                               id="exampleSelect"
                               name="select"
@@ -213,16 +203,16 @@ function TransactionReport() {
                           </Col>
                         </FormGroup>
                       </Col>
-                      <Col xs={4}>
+                      <Col xs={12} sm={12} md={4} lg={4}>
                         <FormGroup row style={{ alignItems: 'center' }}>
                           <Label
                             for="exampleEmail"
-                            sm={4}
+                            sm={4} xs={4} md={5} lg={4}
                           >
                             Cashier
                           </Label>
 
-                          <Col sm={8}>
+                          <Col sm={8} xs={8} md={7} lg={8}>
                             <Input
                               id="exampleSelect"
                               name="select"
@@ -238,15 +228,15 @@ function TransactionReport() {
                       </Col>
                     </> : <></>
                   }
-                  <Col xs={4}>
+                  <Col xs={12} sm={12} md={4} lg={4}>
                     <FormGroup row style={{ alignItems: 'center' }}>
                       <Label
                         for="fromDate"
-                        sm={4}
+                        sm={4} xs={4} md={5} lg={4}
                       >
                         Từ ngày
                       </Label>
-                      <Col sm={8}>
+                      <Col sm={8} xs={8} md={7} lg={8}>
                         <Input
                           id="fromDate"
                           name="fromDate"
@@ -258,15 +248,15 @@ function TransactionReport() {
                       </Col>
                     </FormGroup>
                   </Col>
-                  <Col xs={4}>
+                  <Col xs={12} sm={12} md={4} lg={4}>
                     <FormGroup row style={{ alignItems: 'center' }}>
                       <Label
                         for="toDate"
-                        sm={4}
+                        sm={4} xs={4} md={5} lg={4}
                       >
                         Đến ngày
                       </Label>
-                      <Col sm={8}>
+                      <Col sm={8} xs={8} md={7} lg={8}>
                         <Input
                           id="toDate"
                           name="toDate"
@@ -278,16 +268,16 @@ function TransactionReport() {
                       </Col>
                     </FormGroup>
                   </Col>
-                  <Col xs={4}>
+                  <Col xs={12} sm={12} md={4} lg={4}>
                     <FormGroup row style={{ alignItems: 'center' }}>
                       <Label
                         for="exampleEmail"
-                        sm={4}
+                        sm={4} xs={4} md={5} lg={4}
                       >
                         Trạng thái
                       </Label>
 
-                      <Col sm={8}>
+                      <Col sm={8} xs={8} md={7} lg={8}>
                         <Input
                           id="statusSelect"
                           name="statusSelect"
@@ -307,7 +297,7 @@ function TransactionReport() {
                 </Row>
 
                 <Row>
-                  <Col xs={2}>
+                  <Col xs={12} sm={12} md={4} lg={4}>
                     <Button
                       color="primary"
                       onClick={handleSearch}

@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleInfo, faFileExcel } from '@fortawesome/free-solid-svg-icons'
 import '../../stylesheet/TableControl.css'
 import '../../stylesheet/TextControl.css'
+import FileDownload from 'js-file-download';
 
 function DailyReport() {
   const selectBoxInitialvalue = [{ id: "", name: 'Tất cả' }]
@@ -153,7 +154,25 @@ function DailyReport() {
   const handleToDate = (e) => { setToDate(e.target.value) }
   const handleChangeReport = (e) => { setReportTypeId(e.target.value) }
   const handleSearch = () => { getTransactions() }
+  const handleExport = () => {
+    const url = `/api/reports/exportdetail`
+    axios({
+      url: '/api/reports/exportdetail', //your url
+      method: 'GET',
+      responseType: 'blob',
+      headers: authHeader()
+    }).then(
+      response => {
+        const fileNameHeader = "x-suggested-filename";
+        const suggestedFileName = response.headers[fileNameHeader];
+        const effectiveFileName = (suggestedFileName === undefined
+          ? "Payment.txt"
+          : suggestedFileName);
 
+        FileDownload(response.data, effectiveFileName);
+      }
+    ).catch()
+  }
   if (loading) return <Spinner />
   return (
     <>
@@ -335,7 +354,7 @@ function DailyReport() {
                     <Button color="primary" onClick={handleSearch} >Tìm kiếm</Button>
                   </Col>
                   <Col xs={1} sm={1}>
-                    <Button color="success" onClick={handleSearch} >Export <span><FontAwesomeIcon icon={faFileExcel} /></span></Button>
+                    <Button color="success" onClick={handleExport} >Export <span><FontAwesomeIcon icon={faFileExcel} /></span></Button>
                   </Col>
                 </Row>
               </Card>
