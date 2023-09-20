@@ -1,3 +1,13 @@
 .label-model {
     margin-top: auto;
 }
+
+.modal-input:disabled {
+    border: none;
+    background-color: #ffffff;
+    opacity: 1;
+}
+
+.modal-input {
+    font-weight: 500;
+}

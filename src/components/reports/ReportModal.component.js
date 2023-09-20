@@ -13,7 +13,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Mã giao dịch</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={paymentReference} />
+                                        <Input className='modal-input' readonly id="statusSelect" name="statusSelect" type="text" value={paymentReference} disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -21,7 +21,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Thời gian giao dịch</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={tnxStamp} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={tnxStamp} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -29,7 +29,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Merchant</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={merchantName} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={merchantName} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -37,7 +37,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Branch</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={merchantBranchName} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={merchantBranchName} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -45,7 +45,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Cashier</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={merchantCashierCode} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={merchantCashierCode} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -53,7 +53,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Ngân hàng PL</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={acqName} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={acqName} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -61,7 +61,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Mã giao dịch</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={paymentReference} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={paymentReference} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -69,7 +69,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Tài khoản KH</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={cardNo} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={cardNo} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -77,7 +77,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Tên KH</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={addInfo} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={addInfo} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -85,7 +85,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Số tiền</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={new Intl.NumberFormat('en-US').format(amount)} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={new Intl.NumberFormat('en-US').format(amount)} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -93,7 +93,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Thông tin chuyển khoản</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={ibftInfo} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={ibftInfo} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -101,7 +101,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Trạng thái giao dịch</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={responseCode === '00' ? '00 - Thành công' : responseCode === '68' ? '68 - Đang xử lý' : `${responseCode} - Không thành công`} />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={responseCode === '00' ? '00 - Thành công' : responseCode === '68' ? '68 - Đang xử lý' : `${responseCode} - Không thành công`} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>

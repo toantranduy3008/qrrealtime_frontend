@@ -41,7 +41,7 @@ function TransactionReport() {
 
   const sessionUser = AuthService.getCurrentUser()
   const { targetType, merchantName, branchName, cashierCode } = sessionUser
-  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Chi nhánh", "Quầy", "Ngân hàng phát lệnh", "Số tiền", "Trạng thái"]
+  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Chi nhánh", "Quầy", "Ngân hàng phát lệnh", "Số tài khoản KH", "Số tiền", "Trạng thái"]
   const size = 10;
   const curr = new Date();
   curr.setDate(curr.getDate());
@@ -66,6 +66,9 @@ function TransactionReport() {
   const [data, setData] = useState([])
   const [openModal, setOpenModal] = useState(false)
   const [modalData, setModalData] = useState({})
+  const [fromAmount, setFromAmount] = useState('')
+  const [toAmount, setToAmount] = useState('')
+  const [cardNo, setCardNo] = useState('')
   const handleOpenModal = (data) => {
     setModalData({ ...data, merchantName: merchantName })
     setOpenModal(!openModal)
@@ -113,7 +116,10 @@ function TransactionReport() {
       cashierId: cashierId,
       status: status,
       dateTimeBegin: fromDate,
-      dateTimeEnd: toDate
+      dateTimeEnd: toDate,
+      fromAmount: ReportServices.formatNumberToString(fromAmount),
+      toAmount: ReportServices.formatNumberToString(toAmount),
+      cardNo: cardNo
     }
 
     setLoading(true)
@@ -156,6 +162,15 @@ function TransactionReport() {
   const handleFromdate = (e) => { setFromDate(e.target.value) }
   const handleToDate = (e) => { setToDate(e.target.value) }
   const handleSearch = () => { getTransactions() }
+  const handleChangeFromAmount = (e) => {
+    setFromAmount(ReportServices.formatStringToNumber(e.target.value))
+  }
+  const handleChangeToAmount = (e) => {
+    setToAmount(ReportServices.formatStringToNumber(e.target.value))
+  }
+  const handleChangeCardNumber = (e) => {
+    setCardNo(e.target.value)
+  }
 
   if (loading) return <Spinner />
   return (
@@ -294,6 +309,67 @@ function TransactionReport() {
                       </Col>
                     </FormGroup>
                   </Col>
+
+                  <Col xs={12} sm={12} md={4} lg={4}>
+                    <FormGroup row style={{ alignItems: 'center' }}>
+                      <Label
+                        for="exampleEmail"
+                        sm={4} xs={4} md={5} lg={4}
+                      >
+                        Từ khoảng
+                      </Label>
+
+                      <Col sm={8} xs={8} md={7} lg={8}>
+                        <Input
+                          id="fromAmount"
+                          name="fromAmount"
+                          type="text"
+                          value={fromAmount}
+                          onChange={handleChangeFromAmount}
+                        />
+                      </Col>
+                    </FormGroup>
+                  </Col>
+                  <Col xs={12} sm={12} md={4} lg={4}>
+                    <FormGroup row style={{ alignItems: 'center' }}>
+                      <Label
+                        for="exampleEmail"
+                        sm={4} xs={4} md={5} lg={4}
+                      >
+                        Đến khoảng
+                      </Label>
+
+                      <Col sm={8} xs={8} md={7} lg={8}>
+                        <Input
+                          id="toAmount"
+                          name="toAmount"
+                          type="text"
+                          value={toAmount}
+                          onChange={handleChangeToAmount}
+                        />
+                      </Col>
+                    </FormGroup>
+                  </Col>
+                  <Col xs={12} sm={12} md={4} lg={4}>
+                    <FormGroup row style={{ alignItems: 'center' }}>
+                      <Label
+                        for="exampleEmail"
+                        sm={4} xs={4} md={5} lg={4}
+                      >
+                        Số tài khoản
+                      </Label>
+
+                      <Col sm={8} xs={8} md={7} lg={8}>
+                        <Input
+                          id="fromAmount"
+                          name="fromAmount"
+                          type="text"
+                          value={cardNo}
+                          onChange={handleChangeCardNumber}
+                        />
+                      </Col>
+                    </FormGroup>
+                  </Col>
                 </Row>
 
                 <Row>
@@ -360,6 +436,7 @@ function TransactionReport() {
                             <td>{item.merchantBranchName}</td>
                             <td>{item.merchantCashierCode}</td>
                             <td>{item.acqName}</td>
+                            <td>{item.accountNo}</td>
                             <td>{new Intl.NumberFormat('en-US').format(item.amount)}</td>
                             <td>
                               {
