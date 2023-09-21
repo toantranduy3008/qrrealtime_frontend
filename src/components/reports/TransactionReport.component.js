@@ -1,18 +1,14 @@
 import React, { useEffect, useState, Suspense } from 'react'
-import { Switch, Route, Link } from "react-router-dom";
-import { Container, Row, Col, Card, FormGroup, Label, Input, Button, Table, Badge, Spinner, Alert } from 'reactstrap'
-import ReactPaginate from 'react-paginate';
+import { Container, Row, Col, Card, FormGroup, Label, Input, Button, Spinner, Alert } from 'reactstrap'
 import format from 'date-fns/format';
 import axios from 'axios';
 import AuthService from '../../services/Auth.service';
 import ReportServices from './ReportServices';
 import authHeader from '../../services/auth-header';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 import '../../stylesheet/TableControl.css'
 import '../../stylesheet/TextControl.css'
 import { TransactionDetailModal } from './ReportModal.component';
-import { TransactionTable } from './TransactionTable';
+import { TransactionTable, TablePagination } from './TransactionTable';
 
 function TransactionReport() {
   const selectBoxInitialvalue = [{ id: "", name: 'Tất cả' }]
@@ -77,7 +73,7 @@ function TransactionReport() {
   useEffect(() => {
     if (targetType === 'MERCHANT') {
       setDisableCashier(true)
-      axios.get('/merchantweb/api/TblMerchantBranch/branchByMerchant', { headers: authHeader() })
+      ReportServices.getWithoutPaginating('/merchantweb/api/TblMerchantBranch/branchByMerchant')
         .then(
           (res) => {
             const listBranch = res.data.length > 0 ? res.data.map((item) => { return { id: item.id, name: item.branchName } }) : []
@@ -92,7 +88,7 @@ function TransactionReport() {
   useEffect(() => {
     // Get list cashier
     if (targetType !== 'CASHIER' && branchId) {
-      axios.get(`/merchantweb/api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`, { headers: authHeader() })
+      ReportServices.getWithoutPaginating(`/merchantweb/api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`)
         .then(
           (res) => {
             const listCashier = res.data.length > 0 ? res.data.map((item) => { return { id: item.id, name: item.cashierCode } }) : []
@@ -126,15 +122,13 @@ function TransactionReport() {
     setLoading(true)
     ReportServices.get(`/merchantweb/api/HisPayment/`, paging, filtersInput).then(
       (res) => {
-        const { status, data } = res
-        if (status !== 200) console.log('Có lỗi trong quá trình lấy dữ liệu')
+        const { data } = res
         const { content, totalPages } = data
         setTotalPage(totalPages)
-        if (content.length === 0) console.log('Không có dữ liệu')
         setData(content)
       }
     ).catch(
-      (e) => { console.log(e) }
+      (e) => { throw new Error(e) }
     ).finally(
       setLoading(false)
     )
@@ -390,72 +384,12 @@ function TransactionReport() {
             <Row>
               <Col>
                 <Card className='mt-0'>
-                  {/* Phân trang */}
                   <Row>
                     <Col xl={4} lg={6} md={8} className="control-col-r3">
-                      <ReactPaginate
-                        previousLabel={'Trước'}
-                        nextLabel={'Sau'}
-                        pageCount={totalPage}
-                        onPageChange={handleChangePage}
-                        pageClassName="page-item"
-                        pageLinkClassName="page-link"
-                        previousClassName="page-item"
-                        previousLinkClassName="page-link"
-                        nextClassName="page-item"
-                        nextLinkClassName="page-link"
-                        breakLabel="..."
-                        breakClassName="page-item"
-                        breakLinkClassName="page-link"
-                        containerClassName="pagination align-right"
-                        activeClassName="active"
-                      />
+                      <TablePagination totalPage={totalPage} handleChangePage={handleChangePage} />
                     </Col>
                   </Row>
-
-                  {/* Bảng */}
-                  <TransactionTable rowHeader={rowHeader} data={data} handleOpenModal={handleOpenModal} />
-                  {/* <Table className="align-items-center small-font-table"
-                    bordered
-                    striped
-                    hover
-                    responsive
-                  >
-                    <thead>
-                      <tr>
-                        {rowHeader.map((row, index) => {
-                          return (<th key={index}>{row}</th>)
-                        })}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.map((item, index) => {
-                        return (
-                          <tr key={index}>
-                            <th>{index + 1}</th>
-                            <td style={{ cursor: "pointer", color: "blue" }} className="align-middle no-wrap-box" onClick={() => handleOpenModal(item)}>{item.paymentReference.substring(0, 10).concat('...')}</td>
-                            <td>{item.tnxStamp}</td>
-                            <td>{item.merchantBranchName}</td>
-                            <td>{item.merchantCashierCode}</td>
-                            <td>{item.acqName}</td>
-                            <td>{item.accountNo}</td>
-                            <td>{new Intl.NumberFormat('en-US').format(item.amount)}</td>
-                            <td>
-                              {
-                                item.responseCode === "00" ?
-                                  <Badge color="success" pill >Thành công</Badge>
-                                  :
-                                  item.responseCode === "68" ?
-                                    <Badge color="warning" pill >Đang xử lý</Badge>
-                                    :
-                                    <Badge color="danger" pill >Không thành công</Badge>
-                              }
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </Table> */}
+                  <TransactionTable rowHeader={rowHeader} data={data} handleOpenModal={handleOpenModal} page={page} pageSize={size} />
                 </Card>
               </Col >
             </Row >
