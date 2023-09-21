@@ -57,6 +57,7 @@ div.overlay-custom-class-name {
   z-index: 10000;
 }
 
-ul>li>a {
+ul>li>a,
+.navbar-nav .nav-link {
   color: black;
 }

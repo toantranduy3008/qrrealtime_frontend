@@ -12,6 +12,7 @@ import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 import '../../stylesheet/TableControl.css'
 import '../../stylesheet/TextControl.css'
 import { TransactionDetailModal } from './ReportModal.component';
+import { TransactionTable } from './TransactionTable';
 
 function TransactionReport() {
   const selectBoxInitialvalue = [{ id: "", name: 'Tất cả' }]
@@ -413,7 +414,8 @@ function TransactionReport() {
                   </Row>
 
                   {/* Bảng */}
-                  <Table className="align-items-center small-font-table"
+                  <TransactionTable rowHeader={rowHeader} data={data} handleOpenModal={handleOpenModal} />
+                  {/* <Table className="align-items-center small-font-table"
                     bordered
                     striped
                     hover
@@ -453,15 +455,13 @@ function TransactionReport() {
                         )
                       })}
                     </tbody>
-                  </Table>
+                  </Table> */}
                 </Card>
               </Col >
-
             </Row >
           }
         </Container>
       </Suspense>
-
       <TransactionDetailModal isOpen={openModal} toggle={handleOpenModal} data={modalData} />
     </>
 

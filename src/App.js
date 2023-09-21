@@ -3,15 +3,13 @@ import { Switch, Route, Link } from "react-router-dom";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AuthService from "./services/Auth.service";
-
 import Login from "./components/Login.component";
 import Home from "./components/Home.component";
 import Profile from "./components/Profile.component";
-
 import PrivateRoute from "./utils/PrivateRoute";
 import {
 	Nav, NavItem, Navbar, NavLink,
-	UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem
+	UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Container
 } from 'reactstrap';
 import AuthVerify from "./common/AuthVerify";
 import EventBus from "./common/EventBus";
@@ -152,125 +150,94 @@ class App extends Component {
 		const { currentUser, showTechAdminBoard } = this.state;
 
 		return (
-			<div>
-				<Navbar expand="md">
-					<div>
-						<Link to={"/merchantweb/reports/transactionReport"} className="navbar-brand">
-							<img src='/merchantweb/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
-						</Link>
-					</div>
+			<Container fluid>
+				<div>
+					<Navbar expand="md">
+						<div>
+							<Link to={"/merchantweb/merchant/reports/transactions"} className="navbar-brand">
+								<img src='/merchantweb/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
+							</Link>
+						</div>
 
-					<Nav className="mr-auto" navbar>
-						{/* {showTechAdminBoard && (
-							<>
+						<Nav className="mr-auto" navbar>
+							{currentUser && (
+								<>
+									<UncontrolledDropdown nav inNavbar>
+										<DropdownToggle nav caret>
+											Báo cáo
+										</DropdownToggle>
+										<DropdownMenu className="bg-light">
+											<DropdownItem className="bg-light">
+												<Link to={"/merchantweb/merchant/reports/transactions"} className="nav-link">
+													Tìm kiếm giao dịch
+												</Link>
+											</DropdownItem>
+											<DropdownItem className="bg-light">
+												<Link to={"/merchantweb/merchant/reports/daily-report"} className="nav-link">
+													Báo cáo hàng ngày
+												</Link>
+											</DropdownItem>
+										</DropdownMenu>
+									</UncontrolledDropdown>
+								</>
+							)}
+						</Nav>
+
+						{currentUser ? (
+							<Nav className="ml-auto" navbar>
 								<UncontrolledDropdown nav inNavbar>
 									<DropdownToggle nav caret>
-										Lịch sử
+										{currentUser.username}
 									</DropdownToggle>
-									<DropdownMenu className="bg-dark">
-										<DropdownItem className="bg-dark">
-											<Link to={"/admin/history/HisApiAccess"} className="nav-link">
-												Lịch sử tương tác API
+									<DropdownMenu className="bg-light dropdown-menu-right">
+										{/* <DropdownItem className="bg-light">
+											<Link to={"/admin/profile"} className="nav-link">
+												Tài khoản
 											</Link>
+										</DropdownItem> */}
+										<DropdownItem className="bg-light">
+											<NavLink onClick={this.logOut}>
+												Logout
+											</NavLink>
 										</DropdownItem>
 									</DropdownMenu>
 								</UncontrolledDropdown>
-							</>
-						)} */}
 
-						{currentUser && (
-							<>
-								{/* Tra cứu */}
-								{/* <UncontrolledDropdown nav inNavbar>
-									<DropdownToggle nav caret>
-										Tra cứu
-									</DropdownToggle>
-									<DropdownMenu className="bg-dark">
-										<DropdownItem className="bg-dark">
-											<Link to={"/admin/detail/TblPayment"} className="nav-link">
-												Tra cứu giao dịch do TCNL trả về
-											</Link>
-										</DropdownItem>
-									</DropdownMenu>
-								</UncontrolledDropdown> */}
 
-								{/* Báo cáo */}
-								<UncontrolledDropdown nav inNavbar>
-									<DropdownToggle nav caret>
-										Báo cáo
-									</DropdownToggle>
-									<DropdownMenu className="bg-dark">
-										<DropdownItem className="bg-dark">
-											<Link to={"/merchantweb/merchant/reports/transactions"} className="nav-link">
-												Tìm kiếm giao dịch
-											</Link>
-										</DropdownItem>
-										<DropdownItem className="bg-dark">
-											<Link to={"/merchantweb/merchant/reports/daily-report"} className="nav-link">
-												Báo cáo hàng ngày
-											</Link>
-										</DropdownItem>
-									</DropdownMenu>
-								</UncontrolledDropdown>
-							</>
+							</Nav>
+						) : (
+							<Nav className="ml-auto" navbar>
+								<NavItem>
+									<Link to={"/login"} className="nav-link">
+										Login
+									</Link>
+								</NavItem>
+							</Nav>
 						)}
-					</Nav>
+					</Navbar>
 
-					{currentUser ? (
-						<Nav className="ml-auto" navbar>
-							<UncontrolledDropdown nav inNavbar>
-								<DropdownToggle nav caret>
-									{currentUser.username}
-								</DropdownToggle>
-								<DropdownMenu className="bg-dark dropdown-menu-right">
-									<DropdownItem className="bg-dark">
-										<Link to={"/admin/profile"} className="nav-link">
-											Tài khoản
-										</Link>
-									</DropdownItem>
-									<DropdownItem className="bg-dark">
-										<NavLink onClick={this.logOut}>
-											Logout
-										</NavLink>
-									</DropdownItem>
-								</DropdownMenu>
-							</UncontrolledDropdown>
+					<Switch>
+						<PrivateRoute exact path={["/merchantweb/", "/merchantweb/home"]} component={Home} />
+						<Route exact path="/merchantweb/login" component={Login} />
+						<PrivateRoute exact path="/merchantweb/merchant/profile" component={Profile} />
 
 
-						</Nav>
-					) : (
-						<Nav className="ml-auto" navbar>
-							<NavItem>
-								<Link to={"/login"} className="nav-link">
-									Login
-								</Link>
-							</NavItem>
-						</Nav>
-					)}
-				</Navbar>
+						<PrivateRoute path="/merchantweb/merchant/reports/transactions"
+							component={TransactionReport}
+							pageTitle="Tìm kiếm giao dịch"
+						/>
+						<PrivateRoute path="/merchantweb/merchant/reports/daily-report"
+							component={DailyReport}
+							pageTitle="Báo cáo hàng ngày"
+						/>
 
-				{/* <Container fluid className="mt-4"> */}
-				<Switch>
-					<PrivateRoute exact path={["/merchantweb/", "/merchantweb/home"]} component={Home} />
-					<Route exact path="/merchantweb/login" component={Login} />
-					<PrivateRoute exact path="/merchantweb/merchant/profile" component={Profile} />
+					</Switch>
+					<AuthVerify logOut={this.logOut} />
 
+					<FooterComponent></FooterComponent>
+				</div>
+			</Container>
 
-					<PrivateRoute path="/merchantweb/merchant/reports/transactions"
-						component={TransactionReport}
-						pageTitle="Tìm kiếm giao dịch"
-					/>
-					<PrivateRoute path="/merchantweb/merchant/reports/daily-report"
-						component={DailyReport}
-						pageTitle="Báo cáo hàng ngày"
-					/>
-
-				</Switch>
-				{/* </Container> */}
-				<AuthVerify logOut={this.logOut} />
-
-				<FooterComponent></FooterComponent>
-			</div>
 		);
 	}
 }
