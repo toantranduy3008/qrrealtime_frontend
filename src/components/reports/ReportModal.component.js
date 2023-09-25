@@ -1,5 +1,11 @@
 import { Container, Row, Col, Input, FormGroup, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { useState } from 'react';
 import './Report.css'
+import ReportServices from './ReportServices'
+import ServiceAlert from '../../common/ServiceAlert';
+import { DefaultSpinner } from './ReportServices';
+
+
 export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
     const { paymentReference, tnxStamp, merchantName, merchantBranchName, merchantCashierCode, acqName, cardNo, addInfo, amount, ibftInfo, responseCode } = data
     return (
@@ -109,6 +115,90 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                     </Container>
                 </ModalBody>
                 <ModalFooter>
+                    <Button color="secondary" onClick={toggle}>Đóng</Button>
+                </ModalFooter>
+            </Modal>
+        </>
+    )
+}
+
+export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
+    const [amount, setAmount] = useState(0)
+    const [description, setDescription] = useState('')
+    const [imgSource, setImgSource] = useState('/merchantweb/images/napas.svg')
+    const [loading, setLoading] = useState(false)
+    const handleGenerateQRCode = () => {
+        if (!amount || !description || parseInt(amount, 10) === 0) {
+            ServiceAlert.error('Lỗi', 'Không được để trống số tiền hoặc nội dung chuyển tiền.')
+            return
+        }
+
+        const qrAmount = ReportServices.formatNumberToString(amount)
+        setLoading(true)
+        ReportServices.genQRCode(`/merchantweb/api/VietQR/generateQRCodeCashier?amount=${qrAmount}&description=${description}`)
+            .then(
+                res => {
+                    console.log(res)
+                    const url = URL.createObjectURL(res.data)
+                    setImgSource(url)
+                }
+            )
+            .catch((error) => {
+                ServiceAlert.error('Lỗi', 'Không tạo được mã QR.')
+            })
+            .finally(
+                setLoading(false)
+            )
+    }
+    const handleChangeAmount = (e) => {
+        setAmount(ReportServices.formatStringToNumber(e.target.value))
+    }
+    const handleChangeDescription = (e) => {
+        setDescription(e.target.value)
+    }
+    const handleCloseModal = () => {
+        setAmount(0)
+        setDescription('')
+        setImgSource('/merchantweb/images/napas.svg')
+        isOpen = false
+    }
+    return (
+        <>
+            <Modal isOpen={isOpen} toggle={toggle} size='md' centered scrollable={true} onClosed={handleCloseModal}>
+                <ModalHeader toggle={toggle}>Thông tin QR</ModalHeader>
+                <ModalBody>
+                    <Container fluid>
+                        <Row>
+                            <Col xs={12} sm={12} md={{ size: 4, offset: 4 }} style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+                                <div className='qr-container'>
+                                    {loading ? <DefaultSpinner /> : <img src={imgSource} alt="pic" />}
+                                </div>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col xs={12} sm={12}>
+                                <FormGroup row style={{ alignItems: 'center' }}>
+                                    <Label for="exampleEmail" sm={3} className='label-model'>Số tiền</Label>
+                                    <Col sm={8}>
+                                        <Input id="statusSelect" name="statusSelect" type="text" value={amount} onChange={handleChangeAmount} />
+                                    </Col>
+                                </FormGroup>
+                            </Col>
+
+                            <Col xs={12} sm={12}>
+                                <FormGroup row style={{ alignItems: 'center' }}>
+                                    <Label for="exampleEmail" sm={3} className='label-model'>Nội dung chuyển tiền</Label>
+                                    <Col sm={8}>
+                                        <Input placeholder='Nội dung chuyển tiền' id="statusSelect" name="statusSelect" type="textarea" value={description} onChange={handleChangeDescription} />
+                                    </Col>
+                                </FormGroup>
+                            </Col>
+                        </Row>
+                    </Container>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={handleGenerateQRCode}>Tạo mã</Button>
                     <Button color="secondary" onClick={toggle}>Đóng</Button>
                 </ModalFooter>
             </Modal>

@@ -1,21 +1,18 @@
-import React, { useEffect, useState, Suspense } from 'react'
-import { Switch, Route, Link } from "react-router-dom";
-import { Container, Row, Col, Card, FormGroup, Label, Input, Button, Table, Badge, Spinner, Alert } from 'reactstrap'
-import ReactPaginate from 'react-paginate';
+import React, { useEffect, useState } from 'react'
+import { Container, Row, Col, Card, FormGroup, Label, Input, Button } from 'reactstrap'
 import format from 'date-fns/format';
-import axios from 'axios';
 import AuthService from '../../services/Auth.service';
 import ReportServices from './ReportServices';
-import authHeader from '../../services/auth-header';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleInfo, faFileExcel } from '@fortawesome/free-solid-svg-icons'
 import '../../stylesheet/TableControl.css'
 import '../../stylesheet/TextControl.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import FileDownload from 'js-file-download';
+import EventBus from '../../common/EventBus';
+import ServiceAlert from "../../common/ServiceAlert";
 
-function DailyReport() {
+function TransactionReport() {
   const selectBoxInitialvalue = [{ id: "", name: 'Tất cả' }]
-  const reportTypes = [{}]
   const userTypes = {
     MERCHANT: ['PERSONAL', 'MERCHANT', 'BRANCH', 'CASHIER'],
     BRANCH: ['BRANCH', 'CASHIER'],
@@ -40,10 +37,9 @@ function DailyReport() {
     }
   ]
 
+  const reportTypes = [{ id: 1, name: 'Báo cáo chi tiết' }, { id: 2, name: 'Báo cáo tổng hợp' }]
   const sessionUser = AuthService.getCurrentUser()
   const { targetType, merchantName, branchName, cashierCode } = sessionUser
-  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Branch", "Quầy", "Ngân hàng phát lệnh", "Số tiền", "Trạng thái"]
-  const size = 10;
   const curr = new Date();
   curr.setDate(curr.getDate());
   const currentDate = curr.toISOString().substring(0, 10);
@@ -51,26 +47,27 @@ function DailyReport() {
   const [personal, setPersonal] = useState(targetType === 'PERSONAL')
   const [fromDate, setFromDate] = useState(`${firstDateOfMonth}T00:00`)
   const [toDate, setToDate] = useState(`${currentDate}T23:59`)
-  const [page, setPage] = useState(0)
   const [loading, setLoading] = useState(false)
   const [merchant, setMerchant] = useState(merchantName ? [{ code: "", name: merchantName }] : selectBoxInitialvalue)
   const [branch, setBranch] = useState(branchName ? [{ code: "", name: branchName }] : selectBoxInitialvalue)
   const [cashier, setCashier] = useState(cashierCode ? [{ code: "", name: cashierCode }] : selectBoxInitialvalue)
   const [merchantId, setMerchantId] = useState("")
   const [branchId, setBranchId] = useState("")
+  const [selectedBranchName, setSelectedBranchName] = useState(branchName ? branchName : 'Tất cả')
+  const [selectedCashierCode, setSelectedCashierCode] = useState(cashierCode ? cashierCode : 'Tất cả')
   const [cashierId, setCashierId] = useState("")
-  const [totalPage, setTotalPage] = useState(0)
   const [disableMerchant, setDisableMerchant] = useState(userTypes.MERCHANT.includes(targetType))
   const [disableBranch, setDisableBranch] = useState(userTypes.BRANCH.includes(targetType))
   const [disableCashier, setDisableCashier] = useState(userTypes.CASHIER.includes(targetType))
   const [status, setStatus] = useState("")
-  const [data, setData] = useState([])
-  const [reportType, setReportType] = useState(reportTypes)
-  const [reportTypeId, setReportTypeId] = useState("")
+  const [fromAmount, setFromAmount] = useState('')
+  const [toAmount, setToAmount] = useState('')
+  const [cardNo, setCardNo] = useState('')
+  const [reportTypeId, setReportTypeId] = useState(1)
   useEffect(() => {
     if (targetType === 'MERCHANT') {
       setDisableCashier(true)
-      axios.get('/api/TblMerchantBranch/branchByMerchant', { headers: authHeader() })
+      ReportServices.getWithoutPaginating('/merchantweb/api/TblMerchantBranch/branchByMerchant')
         .then(
           (res) => {
             const listBranch = res.data.length > 0 ? res.data.map((item) => { return { id: item.id, name: item.branchName } }) : []
@@ -85,7 +82,7 @@ function DailyReport() {
   useEffect(() => {
     // Get list cashier
     if (targetType !== 'CASHIER' && branchId) {
-      axios.get(`/api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`, { headers: authHeader() })
+      ReportServices.getWithoutPaginating(`/merchantweb/api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`)
         .then(
           (res) => {
             const listCashier = res.data.length > 0 ? res.data.map((item) => { return { id: item.id, name: item.cashierCode } }) : []
@@ -98,45 +95,51 @@ function DailyReport() {
   }, [branchId])
 
   const getTransactions = () => {
-    const paging = {
-      page: page,
-      size: size,
-      sort: 'id,asc'
-    }
-
     const filtersInput = {
       merchantId: merchantId,
       branchId: branchId,
       cashierId: cashierId,
       status: status,
       dateTimeBegin: fromDate,
-      dateTimeEnd: toDate
+      dateTimeEnd: toDate,
+      fromAmount: ReportServices.formatNumberToString(fromAmount),
+      toAmount: ReportServices.formatNumberToString(toAmount),
+      cardNo: cardNo,
+      merchantName: merchantName,
+      branchName: selectedBranchName,
+      cashierName: selectedCashierCode,
+      type: reportTypeId
     }
 
-    setLoading(true)
-    ReportServices.get(`/api/HisPayment/`, paging, filtersInput).then(
-      (res) => {
-        const { status, data } = res
-        if (status !== 200) console.log('Có lỗi trong quá trình lấy dữ liệu')
-        const { content, totalPages } = data
-        setTotalPage(totalPages)
-        if (content.length === 0) console.log('Không có dữ liệu')
-        setData(content)
-      }
-    ).catch(
-      (e) => { console.log(e) }
-    ).finally(
-      setLoading(false)
-    )
-  }
-  useEffect(() => {
-    // Get transactions
-    getTransactions()
-  }, [page])
+    ReportServices.exportExcel(filtersInput)
+      .then(
+        response => {
+          const { status, data } = response
+          if (status === 200) {
+            const fileNameHeader = "x-suggested-filename";
+            const suggestedFileName = response.headers[fileNameHeader];
+            const effectiveFileName = (suggestedFileName === undefined
+              ? "Payment.xlsx"
+              : suggestedFileName);
 
-  const handleChangePage = (e) => { setPage(e.selected) }
+            FileDownload(data, effectiveFileName);
+          }
+          else if (status === 401) {
+            EventBus.dispatch("logout");
+          } else {
+            ServiceAlert.error("Lỗi", 'Không lấy được dữ liệu từ server');
+          }
+        }
+      )
+      .catch((e) => { ServiceAlert.error("Lỗi", e.message); })
+      .finally()
+  }
+
   const handleChangeMerchant = (e) => { setMerchantId(e.target.value) }
   const handleChangeBranch = (e) => {
+    let selected = e.target.value ? branch.find(x => x.id === Number(e.target.value)).name : 'Tất cả'
+    setSelectedBranchName(selected)
+
     if (!e.target.value) {
       // Nếu branch đổi sang tất cả -> set giá trị của cashier sang tất cả
       setCashierId("")
@@ -148,287 +151,209 @@ function DailyReport() {
     }
     setBranchId(e.target.value)
   }
-  const handleChangeCashier = (e) => { setCashierId(e.target.value) }
+  const handleChangeCashier = (e) => {
+    let selected = e.target.value ? cashier.find(x => x.id === Number(e.target.value)).name : 'Tất cả'
+    setSelectedCashierCode(selected)
+    setCashierId(e.target.value)
+  }
   const handleChangeStatus = (e) => { setStatus(e.target.value) }
   const handleFromdate = (e) => { setFromDate(e.target.value) }
   const handleToDate = (e) => { setToDate(e.target.value) }
-  const handleChangeReport = (e) => { setReportTypeId(e.target.value) }
-  const handleSearch = () => { getTransactions() }
-  const handleExport = () => {
-    const url = `/api/reports/exportdetail`
-    axios({
-      url: '/api/reports/exportdetail', //your url
-      method: 'GET',
-      responseType: 'blob',
-      headers: authHeader()
-    }).then(
-      response => {
-        const fileNameHeader = "x-suggested-filename";
-        const suggestedFileName = response.headers[fileNameHeader];
-        const effectiveFileName = (suggestedFileName === undefined
-          ? "Payment.txt"
-          : suggestedFileName);
+  const handleExport = () => { getTransactions() }
+  const handleChangeFromAmount = (e) => { setFromAmount(ReportServices.formatStringToNumber(e.target.value)) }
+  const handleChangeToAmount = (e) => { setToAmount(ReportServices.formatStringToNumber(e.target.value)) }
+  const handleChangeCardNumber = (e) => { setCardNo(e.target.value) }
+  const handleChangeReportType = (e) => { setReportTypeId(e.target.value) }
 
-        FileDownload(response.data, effectiveFileName);
-      }
-    ).catch()
-  }
-  if (loading) return <Spinner />
   return (
     <>
-      <Suspense fallback={<Spinner />}>
-        {/* Tìm kiếm */}
-        <Container fluid>
-          <Row>
-            <Col>
-              <Card className='mt-0'>
-                <Row>
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Merchant</Label>
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="exampleSelect"
-                          name="select"
-                          type="select"
-                          disabled={disableMerchant}
-                          defaultValue={merchantId}
-                          onChange={handleChangeMerchant}
-                        >
-                          {merchant.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
-                        </Input>
-                      </Col>
-                    </FormGroup>
-                  </Col>
-                  {!personal ?
-                    <>
-                      <Col xs={12} sm={12} md={4} lg={4}>
-                        <FormGroup row style={{ alignItems: 'center' }}>
-                          <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Branch</Label>
-                          <Col sm={8} xs={8} md={7} lg={8}>
-                            <Input
-                              id="exampleSelect"
-                              name="select"
-                              type="select"
-                              disabled={disableBranch}
-                              defaultValue={branchId}
-                              onChange={handleChangeBranch}
-                            >
-                              {branch.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
-                            </Input>
-                          </Col>
-                        </FormGroup>
-                      </Col>
-                      <Col xs={12} sm={12} md={4} lg={4}>
-                        <FormGroup row style={{ alignItems: 'center' }}>
-                          <Label
-                            for="exampleEmail"
-                            sm={4} xs={4} md={5} lg={4}
+      <Container fluid>
+        <Row>
+          <Col>
+            <Card className='mt-0'>
+              <Row>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Merchant</Label>
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="exampleSelect"
+                        name="select"
+                        type="select"
+                        disabled={disableMerchant}
+                        defaultValue={merchantId}
+                        onChange={handleChangeMerchant}
+                      >
+                        {merchant.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                      </Input>
+                    </Col>
+                  </FormGroup>
+                </Col>
+                {!personal ?
+                  <>
+                    <Col xs={12} sm={12} md={4} lg={4}>
+                      <FormGroup row style={{ alignItems: 'center' }}>
+                        <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Branch</Label>
+                        <Col sm={8} xs={8} md={7} lg={8}>
+                          <Input
+                            id="exampleSelect"
+                            name="select"
+                            type="select"
+                            disabled={disableBranch}
+                            defaultValue={branchId}
+                            onChange={handleChangeBranch}
                           >
-                            Cashier
-                          </Label>
-
-                          <Col sm={8} xs={8} md={7} lg={8}>
-                            <Input
-                              id="exampleSelect"
-                              name="select"
-                              type="select"
-                              disabled={disableCashier}
-                              defaultValue={cashierId}
-                              onChange={handleChangeCashier}
-                            >
-                              {cashier.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
-                            </Input>
-                          </Col>
-                        </FormGroup>
-                      </Col>
-                    </> : <></>
-                  }
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="fromDate"
-                        sm={4} xs={4} md={5} lg={4}
-                      >
-                        Từ ngày
-                      </Label>
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="fromDate"
-                          name="fromDate"
-                          placeholder="Từ ngày"
-                          type="datetime-local"
-                          value={fromDate}
-                          onChange={handleFromdate}
-                        />
-                      </Col>
-                    </FormGroup>
-                  </Col>
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="toDate"
-                        sm={4} xs={4} md={5} lg={4}
-                      >
-                        Đến ngày
-                      </Label>
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="toDate"
-                          name="toDate"
-                          placeholder="tới ngày"
-                          type="datetime-local"
-                          value={toDate}
-                          onChange={handleToDate}
-                        />
-                      </Col>
-                    </FormGroup>
-                  </Col>
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="exampleEmail"
-                        sm={4} xs={4} md={5} lg={4}
-                      >
-                        Trạng thái
-                      </Label>
-
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="statusSelect"
-                          name="statusSelect"
-                          type="select"
-                          value={status}
-                          onChange={handleChangeStatus}
-                        >
-                          {transactionStatus.map((s, index) => {
-                            return (
-                              <option value={s.id} key={index}>{s.name}</option>
-                            )
-                          })}
-                        </Input>
-                      </Col>
-                    </FormGroup>
-                  </Col>
-
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="exampleEmail"
-                        sm={4} xs={4} md={5} lg={4}
-                      >
-                        Loại báo cáo
-                      </Label>
-
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="statusSelect"
-                          name="statusSelect"
-                          type="select"
-                          value={reportTypeId}
-                          onChange={handleChangeReport}
-                        >
-                          {reportTypes.map((s, index) => {
-                            return (
-                              <option value={s.id} key={index}>{s.name}</option>
-                            )
-                          })}
-                        </Input>
-                      </Col>
-                    </FormGroup>
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col xs={12} sm={12} md={1} lg={1}>
-                    <Button color="primary" onClick={handleSearch} style={{ width: '100%' }}>Tìm kiếm</Button>
-                  </Col>
-                  <Col xs={12} sm={12} md={1} lg={1}>
-                    <Button color="success" onClick={handleExport} style={{ width: '100%' }}> Export < span > <FontAwesomeIcon icon={faFileExcel} /></span></Button>
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-          </Row >
-
-          {totalPage === 0 ? <Alert color="warning">Không tìm thấy kết quả!</Alert> :
-            <Row>
-              <Col>
-                <Card className='mt-0'>
-                  {/* Phân trang */}
-                  <Row>
-                    <Col xl={4} lg={6} md={8} className="control-col-r3">
-                      <ReactPaginate
-                        previousLabel={'Trước'}
-                        nextLabel={'Sau'}
-                        pageCount={totalPage}
-                        onPageChange={handleChangePage}
-                        pageClassName="page-item"
-                        pageLinkClassName="page-link"
-                        previousClassName="page-item"
-                        previousLinkClassName="page-link"
-                        nextClassName="page-item"
-                        nextLinkClassName="page-link"
-                        breakLabel="..."
-                        breakClassName="page-item"
-                        breakLinkClassName="page-link"
-                        containerClassName="pagination align-right"
-                        activeClassName="active"
+                            {branch.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                          </Input>
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                    <Col xs={12} sm={12} md={4} lg={4}>
+                      <FormGroup row style={{ alignItems: 'center' }}>
+                        <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4} >Cashier</Label>
+                        <Col sm={8} xs={8} md={7} lg={8}>
+                          <Input
+                            id="exampleSelect"
+                            name="select"
+                            type="select"
+                            disabled={disableCashier}
+                            defaultValue={cashierId}
+                            onChange={handleChangeCashier}
+                          >
+                            {cashier.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                          </Input>
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                  </> : <></>
+                }
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label for="fromDate" sm={4} xs={4} md={5} lg={4}>Từ ngày</Label>
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="fromDate"
+                        name="fromDate"
+                        placeholder="Từ ngày"
+                        type="datetime-local"
+                        value={fromDate}
+                        onChange={handleFromdate}
                       />
                     </Col>
-                  </Row>
+                  </FormGroup>
+                </Col>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label for="toDate" sm={4} xs={4} md={5} lg={4}>Đến ngày</Label>
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="toDate"
+                        name="toDate"
+                        placeholder="tới ngày"
+                        type="datetime-local"
+                        value={toDate}
+                        onChange={handleToDate}
+                      />
+                    </Col>
+                  </FormGroup>
+                </Col>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Trạng thái</Label>
 
-                  {/* Bảng */}
-                  <Table className="align-items-center small-font-table"
-                    bordered
-                    striped
-                    hover
-                    responsive
-                  >
-                    <thead>
-                      <tr>
-                        {rowHeader.map((row, index) => {
-                          return (<th key={index}>{row}</th>)
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="statusSelect"
+                        name="statusSelect"
+                        type="select"
+                        value={status}
+                        onChange={handleChangeStatus}
+                      >
+                        {transactionStatus.map((s, index) => {
+                          return (
+                            <option value={s.id} key={index}>{s.name}</option>
+                          )
                         })}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.map((item, index) => {
-                        return (
-                          <tr key={index}>
-                            <th>{index + 1}</th>
-                            <td style={{ cursor: "pointer" }} className="align-middle no-wrap-box"><Link >{item.paymentReference.substring(0, 10).concat('...')}</Link></td>
-                            <td>{item.tnxStamp}</td>
-                            <td>{item.merchantBranchName}</td>
-                            <td>{item.merchantCashierCode}</td>
-                            <td>{item.accountNo}</td>
-                            <td>{new Intl.NumberFormat('en-US').format(item.amount)}</td>
-                            <td>
-                              {
-                                item.responseCode === "00" ?
-                                  <Badge color="success" pill >Thành công</Badge>
-                                  :
-                                  item.responseCode === "68" ?
-                                    <Badge color="warning" pill >Đang xử lý</Badge>
-                                    :
-                                    <Badge color="danger" pill >Không thành công</Badge>
-                              }
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </Table>
-                </Card>
-              </Col >
+                      </Input>
+                    </Col>
+                  </FormGroup>
+                </Col>
 
-            </Row >
-          }
-        </Container >
-      </Suspense >
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Số tiền: Từ</Label>
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="fromAmount"
+                        name="fromAmount"
+                        type="text"
+                        value={fromAmount}
+                        onChange={handleChangeFromAmount}
+                      />
+                    </Col>
+                  </FormGroup>
+                </Col>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Đến</Label>
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="toAmount"
+                        name="toAmount"
+                        type="text"
+                        value={toAmount}
+                        onChange={handleChangeToAmount}
+                      />
+                    </Col>
+                  </FormGroup>
+                </Col>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Số tài khoản</Label>
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="fromAmount"
+                        name="fromAmount"
+                        type="text"
+                        value={cardNo}
+                        onChange={handleChangeCardNumber}
+                      />
+                    </Col>
+                  </FormGroup>
+                </Col>
+              </Row>
 
+              <Row>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Loại báo cáo</Label>
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="statusSelect"
+                        name="statusSelect"
+                        type="select"
+                        value={reportTypeId}
+                        onChange={handleChangeReportType}
+                      >
+                        {reportTypes.map((s, index) => {
+                          return (
+                            <option value={s.id} key={index}>{s.name}</option>
+                          )
+                        })}
+                      </Input>
+                    </Col>
+                  </FormGroup>
+                </Col>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <Button color="success" onClick={handleExport}>Export <span><FontAwesomeIcon icon={faFileExcel} /></span></Button>
+                </Col>
+              </Row>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </>
   )
 }
 
-export default DailyReport
+export default TransactionReport

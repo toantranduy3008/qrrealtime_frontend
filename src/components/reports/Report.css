@@ -11,3 +11,20 @@
 .modal-input {
     font-weight: 500;
 }
+
+.qr-container {
+    border: 0.5px solid #eef0f3;
+    margin-bottom: 15px;
+    width: 200px;
+    height: 200px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.qr-container img {
+    width: 200px;
+    height: 200px;
+}

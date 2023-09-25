@@ -1,10 +1,8 @@
 import React, { useEffect, useState, Suspense } from 'react'
 import { Container, Row, Col, Card, FormGroup, Label, Input, Button, Spinner, Alert } from 'reactstrap'
 import format from 'date-fns/format';
-import axios from 'axios';
 import AuthService from '../../services/Auth.service';
 import ReportServices from './ReportServices';
-import authHeader from '../../services/auth-header';
 import '../../stylesheet/TableControl.css'
 import '../../stylesheet/TextControl.css'
 import { TransactionDetailModal } from './ReportModal.component';
@@ -134,8 +132,10 @@ function TransactionReport() {
     )
   }
   useEffect(() => {
-    // Get transactions
-    getTransactions()
+    const interval = setInterval(() => {
+      getTransactions()
+    }, 20000);
+    return () => clearInterval(interval);
   }, [page])
 
   const handleChangePage = (e) => { setPage(e.selected) }
@@ -170,232 +170,235 @@ function TransactionReport() {
   if (loading) return <Spinner />
   return (
     <>
-      <Suspense fallback={<Spinner />}>
-        {/* Tìm kiếm */}
-        <Container fluid>
+
+      {/* Tìm kiếm */}
+      <Container fluid>
+        <Row>
+          <Col>
+            <Card className='mt-0'>
+              <Row>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Merchant</Label>
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="exampleSelect"
+                        name="select"
+                        type="select"
+                        disabled={disableMerchant}
+                        defaultValue={merchantId}
+                        onChange={handleChangeMerchant}
+                      >
+                        {merchant.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                      </Input>
+                    </Col>
+                  </FormGroup>
+                </Col>
+                {!personal ?
+                  <>
+                    <Col xs={12} sm={12} md={4} lg={4}>
+                      <FormGroup row style={{ alignItems: 'center' }}>
+                        <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Branch</Label>
+                        <Col sm={8} xs={8} md={7} lg={8}>
+                          <Input
+                            id="exampleSelect"
+                            name="select"
+                            type="select"
+                            disabled={disableBranch}
+                            defaultValue={branchId}
+                            onChange={handleChangeBranch}
+                          >
+                            {branch.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                          </Input>
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                    <Col xs={12} sm={12} md={4} lg={4}>
+                      <FormGroup row style={{ alignItems: 'center' }}>
+                        <Label
+                          for="exampleEmail"
+                          sm={4} xs={4} md={5} lg={4}
+                        >
+                          Cashier
+                        </Label>
+
+                        <Col sm={8} xs={8} md={7} lg={8}>
+                          <Input
+                            id="exampleSelect"
+                            name="select"
+                            type="select"
+                            disabled={disableCashier}
+                            defaultValue={cashierId}
+                            onChange={handleChangeCashier}
+                          >
+                            {cashier.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
+                          </Input>
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                  </> : <></>
+                }
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label
+                      for="fromDate"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Từ ngày
+                    </Label>
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="fromDate"
+                        name="fromDate"
+                        placeholder="Từ ngày"
+                        type="datetime-local"
+                        value={fromDate}
+                        onChange={handleFromdate}
+                      />
+                    </Col>
+                  </FormGroup>
+                </Col>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label
+                      for="toDate"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Đến ngày
+                    </Label>
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="toDate"
+                        name="toDate"
+                        placeholder="tới ngày"
+                        type="datetime-local"
+                        value={toDate}
+                        onChange={handleToDate}
+                      />
+                    </Col>
+                  </FormGroup>
+                </Col>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label
+                      for="exampleEmail"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Trạng thái
+                    </Label>
+
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="statusSelect"
+                        name="statusSelect"
+                        type="select"
+                        value={status}
+                        onChange={handleChangeStatus}
+                      >
+                        {transactionStatus.map((s, index) => {
+                          return (
+                            <option value={s.id} key={index}>{s.name}</option>
+                          )
+                        })}
+                      </Input>
+                    </Col>
+                  </FormGroup>
+                </Col>
+
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label
+                      for="exampleEmail"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Số tiền: Từ
+                    </Label>
+
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="fromAmount"
+                        name="fromAmount"
+                        type="text"
+                        value={fromAmount}
+                        onChange={handleChangeFromAmount}
+                      />
+                    </Col>
+                  </FormGroup>
+                </Col>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label
+                      for="exampleEmail"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Đến
+                    </Label>
+
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="toAmount"
+                        name="toAmount"
+                        type="text"
+                        value={toAmount}
+                        onChange={handleChangeToAmount}
+                      />
+                    </Col>
+                  </FormGroup>
+                </Col>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <FormGroup row style={{ alignItems: 'center' }}>
+                    <Label
+                      for="exampleEmail"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Số tài khoản
+                    </Label>
+
+                    <Col sm={8} xs={8} md={7} lg={8}>
+                      <Input
+                        id="fromAmount"
+                        name="fromAmount"
+                        type="text"
+                        value={cardNo}
+                        onChange={handleChangeCardNumber}
+                      />
+                    </Col>
+                  </FormGroup>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col xs={12} sm={12} md={4} lg={4}>
+                  <Button
+                    color="primary"
+                    onClick={handleSearch}
+                  >
+                    Tìm kiếm
+                  </Button></Col>
+              </Row>
+            </Card>
+          </Col>
+        </Row>
+
+        {totalPage === 0 ? <Alert color="warning">Không tìm thấy kết quả!</Alert> :
           <Row>
             <Col>
               <Card className='mt-0'>
                 <Row>
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Merchant</Label>
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="exampleSelect"
-                          name="select"
-                          type="select"
-                          disabled={disableMerchant}
-                          defaultValue={merchantId}
-                          onChange={handleChangeMerchant}
-                        >
-                          {merchant.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
-                        </Input>
-                      </Col>
-                    </FormGroup>
-                  </Col>
-                  {!personal ?
-                    <>
-                      <Col xs={12} sm={12} md={4} lg={4}>
-                        <FormGroup row style={{ alignItems: 'center' }}>
-                          <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Branch</Label>
-                          <Col sm={8} xs={8} md={7} lg={8}>
-                            <Input
-                              id="exampleSelect"
-                              name="select"
-                              type="select"
-                              disabled={disableBranch}
-                              defaultValue={branchId}
-                              onChange={handleChangeBranch}
-                            >
-                              {branch.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
-                            </Input>
-                          </Col>
-                        </FormGroup>
-                      </Col>
-                      <Col xs={12} sm={12} md={4} lg={4}>
-                        <FormGroup row style={{ alignItems: 'center' }}>
-                          <Label
-                            for="exampleEmail"
-                            sm={4} xs={4} md={5} lg={4}
-                          >
-                            Cashier
-                          </Label>
-
-                          <Col sm={8} xs={8} md={7} lg={8}>
-                            <Input
-                              id="exampleSelect"
-                              name="select"
-                              type="select"
-                              disabled={disableCashier}
-                              defaultValue={cashierId}
-                              onChange={handleChangeCashier}
-                            >
-                              {cashier.map((item, index) => <option value={item.id} key={index}>{item.name}</option>)}
-                            </Input>
-                          </Col>
-                        </FormGroup>
-                      </Col>
-                    </> : <></>
-                  }
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="fromDate"
-                        sm={4} xs={4} md={5} lg={4}
-                      >
-                        Từ ngày
-                      </Label>
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="fromDate"
-                          name="fromDate"
-                          placeholder="Từ ngày"
-                          type="datetime-local"
-                          value={fromDate}
-                          onChange={handleFromdate}
-                        />
-                      </Col>
-                    </FormGroup>
-                  </Col>
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="toDate"
-                        sm={4} xs={4} md={5} lg={4}
-                      >
-                        Đến ngày
-                      </Label>
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="toDate"
-                          name="toDate"
-                          placeholder="tới ngày"
-                          type="datetime-local"
-                          value={toDate}
-                          onChange={handleToDate}
-                        />
-                      </Col>
-                    </FormGroup>
-                  </Col>
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="exampleEmail"
-                        sm={4} xs={4} md={5} lg={4}
-                      >
-                        Trạng thái
-                      </Label>
-
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="statusSelect"
-                          name="statusSelect"
-                          type="select"
-                          value={status}
-                          onChange={handleChangeStatus}
-                        >
-                          {transactionStatus.map((s, index) => {
-                            return (
-                              <option value={s.id} key={index}>{s.name}</option>
-                            )
-                          })}
-                        </Input>
-                      </Col>
-                    </FormGroup>
-                  </Col>
-
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="exampleEmail"
-                        sm={4} xs={4} md={5} lg={4}
-                      >
-                        Từ khoảng
-                      </Label>
-
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="fromAmount"
-                          name="fromAmount"
-                          type="text"
-                          value={fromAmount}
-                          onChange={handleChangeFromAmount}
-                        />
-                      </Col>
-                    </FormGroup>
-                  </Col>
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="exampleEmail"
-                        sm={4} xs={4} md={5} lg={4}
-                      >
-                        Đến khoảng
-                      </Label>
-
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="toAmount"
-                          name="toAmount"
-                          type="text"
-                          value={toAmount}
-                          onChange={handleChangeToAmount}
-                        />
-                      </Col>
-                    </FormGroup>
-                  </Col>
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <FormGroup row style={{ alignItems: 'center' }}>
-                      <Label
-                        for="exampleEmail"
-                        sm={4} xs={4} md={5} lg={4}
-                      >
-                        Số tài khoản
-                      </Label>
-
-                      <Col sm={8} xs={8} md={7} lg={8}>
-                        <Input
-                          id="fromAmount"
-                          name="fromAmount"
-                          type="text"
-                          value={cardNo}
-                          onChange={handleChangeCardNumber}
-                        />
-                      </Col>
-                    </FormGroup>
+                  <Col xl={4} lg={6} md={8} className="control-col-r3">
+                    <TablePagination totalPage={totalPage} handleChangePage={handleChangePage} />
                   </Col>
                 </Row>
-
-                <Row>
-                  <Col xs={12} sm={12} md={4} lg={4}>
-                    <Button
-                      color="primary"
-                      onClick={handleSearch}
-                    >
-                      Tìm kiếm
-                    </Button></Col>
-                </Row>
-              </Card>
-            </Col>
-          </Row>
-
-          {totalPage === 0 ? <Alert color="warning">Không tìm thấy kết quả!</Alert> :
-            <Row>
-              <Col>
-                <Card className='mt-0'>
-                  <Row>
-                    <Col xl={4} lg={6} md={8} className="control-col-r3">
-                      <TablePagination totalPage={totalPage} handleChangePage={handleChangePage} />
-                    </Col>
-                  </Row>
+                <Suspense fallback={<Spinner />}>
                   <TransactionTable rowHeader={rowHeader} data={data} handleOpenModal={handleOpenModal} page={page} pageSize={size} />
-                </Card>
-              </Col >
-            </Row >
-          }
-        </Container>
-      </Suspense>
+                </Suspense>
+              </Card>
+            </Col >
+          </Row >
+        }
+      </Container>
+
+
       <TransactionDetailModal isOpen={openModal} toggle={handleOpenModal} data={modalData} />
     </>
 

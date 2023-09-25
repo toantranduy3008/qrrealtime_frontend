@@ -1,5 +1,6 @@
 import axios from 'axios'
 import authHeader from '../../services/auth-header';
+import { Spinner } from 'reactstrap';
 
 class ReportServices {
 
@@ -17,8 +18,44 @@ class ReportServices {
     }
 
     formatNumberToString(s) {
-        return s.replace(/,/g, '')
+        return s.toString().replace(/,/g, '')
     }
+
+    exportExcel(inputFilter) {
+        const { merchantId, branchId, cashierId, status, dateTimeBegin, dateTimeEnd, fromAmount, toAmount, cardNo, merchantName, branchName, cashierName, type } = inputFilter
+        const url = `/api/reports/exportdetail?merchantId=${merchantId}&branchId=${branchId}&cashierId=${cashierId}&status=${status}&dateTimeBegin=${dateTimeBegin}&dateTimeEnd=${dateTimeEnd}&type=${type}&merchantName=${merchantName}&branchName=${branchName}&cashierName=${cashierName}&fromAmount=${fromAmount}&toAmount=${toAmount}&cardNo=${cardNo}`
+        return axios({
+            url: url, //your url
+            method: 'GET',
+            responseType: 'blob',
+            headers: authHeader()
+        });
+    }
+
+    genQRCode(url) {
+        // axios.get(url, {headers: })
+        return axios({
+            url: url,
+            method: 'GET',
+            responseType: 'blob',
+            headers: authHeader()
+        })
+    }
+
+    // getCapCha() {
+    //     return window.fetch('', {
+    //         method: 'POST',
+    //     });
+
+    // }
 }
 
 export default new ReportServices();
+
+export const DefaultSpinner = () => {
+    return (
+        <Spinner size="lg" color="info">
+            Loading...
+        </Spinner>
+    )
+}

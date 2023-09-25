@@ -9,15 +9,17 @@ import Profile from "./components/Profile.component";
 import PrivateRoute from "./utils/PrivateRoute";
 import {
 	Nav, NavItem, Navbar, NavLink,
-	UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Container
+	UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Container, Button
 } from 'reactstrap';
 import AuthVerify from "./common/AuthVerify";
 import EventBus from "./common/EventBus";
 import ServiceAlert from "./common/ServiceAlert";
+import { GenerateQRCodeModal } from "./components/reports/ReportModal.component";
 
 import FooterComponent from "./components/Footer.component";
 import TransactionReport from "./components/reports/TransactionReport.component";
 import DailyReport from "./components/reports/DailyReport.component";
+import isThisHour from "date-fns/esm/isThisHour";
 const arrAdminRoles = ["ROOT", "ADMIN"];
 const arrTechAdminRoles = ["ROOT", "ADMIN", "SENIOR_OPERATOR"];
 const arrBusinessRptRoles = ["ROOT", "ADMIN", "SENIOR_OPERATOR", "KIEM_SOAT", "TRA_SOAT", "SENIOR_BUSINESS"];
@@ -37,6 +39,8 @@ class App extends Component {
 		this.handleAction = this.handleAction.bind(this);
 		this.handleSleep = this.handleSleep.bind(this);
 		this.addEventListener = this.addEventListener.bind(this);
+		this.handleOpenModal = this.handleOpenModal.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this)
 		this.removeEventListener = this.removeEventListener.bind(this);
 
 		this.state = {
@@ -48,14 +52,16 @@ class App extends Component {
 			alertTimeout: undefined,
 			logOutTimeout: undefined,
 			lastActiveTime: undefined,
+			openModal: false,
+			userType: undefined
 		};
 	}
 
 	componentDidMount() {
 		const user = AuthService.getCurrentUser();
-
 		if (user) {
 			this.setState({
+				openModal: false,
 				currentUser: user,
 				showAdminBoard: user.roles.some(r => arrAdminRoles.indexOf(r) >= 0),
 				showTechAdminBoard: user.roles.some(r => arrTechAdminRoles.indexOf(r) >= 0),
@@ -146,98 +152,111 @@ class App extends Component {
 		});
 	}
 
+	handleOpenModal() {
+		this.setState({ openModal: true })
+	}
+
+	handleCloseModal() {
+		this.setState({ openModal: false })
+	}
+
 	render() {
 		const { currentUser, showTechAdminBoard } = this.state;
-
+		console.log('render', this.state.openModal)
 		return (
-			<Container fluid>
-				<div>
-					<Navbar expand="md">
-						<div>
-							<Link to={"/merchantweb/merchant/reports/transactions"} className="navbar-brand">
-								<img src='/merchantweb/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
-							</Link>
-						</div>
+			<>
+				<Container fluid>
+					<div>
+						<Navbar expand="md">
+							<div>
+								<Link to={"/merchantweb/merchant/reports/transactions"} className="navbar-brand">
+									<img src='/merchantweb/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
+								</Link>
+							</div>
 
-						<Nav className="mr-auto" navbar>
-							{currentUser && (
-								<>
+							<Nav className="mr-auto" navbar>
+								{currentUser && (
+									<>
+										<UncontrolledDropdown nav inNavbar>
+											<DropdownToggle nav caret>
+												Báo cáo
+											</DropdownToggle>
+											<DropdownMenu className="bg-light">
+												<DropdownItem className="bg-light">
+													<Link to={"/merchantweb/merchant/reports/transactions"} className="nav-link">
+														Tìm kiếm giao dịch
+													</Link>
+												</DropdownItem>
+												<DropdownItem className="bg-light">
+													<Link to={"/merchantweb/merchant/reports/daily-report"} className="nav-link">
+														Báo cáo hàng ngày
+													</Link>
+												</DropdownItem>
+											</DropdownMenu>
+										</UncontrolledDropdown>
+
+										<Button color="primary" onClick={this.handleOpenModal}>Tạo mã QR</Button>
+									</>
+								)}
+							</Nav>
+
+							{currentUser ? (
+								<Nav className="ml-auto" navbar>
 									<UncontrolledDropdown nav inNavbar>
 										<DropdownToggle nav caret>
-											Báo cáo
+											{currentUser.username}
 										</DropdownToggle>
-										<DropdownMenu className="bg-light">
-											<DropdownItem className="bg-light">
-												<Link to={"/merchantweb/merchant/reports/transactions"} className="nav-link">
-													Tìm kiếm giao dịch
-												</Link>
-											</DropdownItem>
-											<DropdownItem className="bg-light">
-												<Link to={"/merchantweb/merchant/reports/daily-report"} className="nav-link">
-													Báo cáo hàng ngày
-												</Link>
-											</DropdownItem>
-										</DropdownMenu>
-									</UncontrolledDropdown>
-								</>
-							)}
-						</Nav>
-
-						{currentUser ? (
-							<Nav className="ml-auto" navbar>
-								<UncontrolledDropdown nav inNavbar>
-									<DropdownToggle nav caret>
-										{currentUser.username}
-									</DropdownToggle>
-									<DropdownMenu className="bg-light dropdown-menu-right">
-										{/* <DropdownItem className="bg-light">
+										<DropdownMenu className="bg-light dropdown-menu-right">
+											{/* <DropdownItem className="bg-light">
 											<Link to={"/admin/profile"} className="nav-link">
 												Tài khoản
 											</Link>
 										</DropdownItem> */}
-										<DropdownItem className="bg-light">
-											<NavLink onClick={this.logOut}>
-												Logout
-											</NavLink>
-										</DropdownItem>
-									</DropdownMenu>
-								</UncontrolledDropdown>
+											<DropdownItem className="bg-light">
+												<NavLink onClick={this.logOut}>
+													Logout
+												</NavLink>
+											</DropdownItem>
+										</DropdownMenu>
+									</UncontrolledDropdown>
 
 
-							</Nav>
-						) : (
-							<Nav className="ml-auto" navbar>
-								<NavItem>
-									<Link to={"/login"} className="nav-link">
-										Login
-									</Link>
-								</NavItem>
-							</Nav>
-						)}
-					</Navbar>
+								</Nav>
+							) : (
+								<Nav className="ml-auto" navbar>
+									<NavItem>
+										<Link to={"/login"} className="nav-link">
+											Login
+										</Link>
+									</NavItem>
+								</Nav>
+							)}
+						</Navbar>
 
-					<Switch>
-						<PrivateRoute exact path={["/merchantweb/", "/merchantweb/home"]} component={Home} />
-						<Route exact path="/merchantweb/login" component={Login} />
-						<PrivateRoute exact path="/merchantweb/merchant/profile" component={Profile} />
+						<Switch>
+							<PrivateRoute exact path={["/merchantweb/", "/merchantweb/home"]} component={Home} />
+							<Route exact path="/merchantweb/login" component={Login} />
+							<PrivateRoute exact path="/merchantweb/merchant/profile" component={Profile} />
 
 
-						<PrivateRoute path="/merchantweb/merchant/reports/transactions"
-							component={TransactionReport}
-							pageTitle="Tìm kiếm giao dịch"
-						/>
-						<PrivateRoute path="/merchantweb/merchant/reports/daily-report"
-							component={DailyReport}
-							pageTitle="Báo cáo hàng ngày"
-						/>
+							<PrivateRoute path="/merchantweb/merchant/reports/transactions"
+								component={TransactionReport}
+								pageTitle="Tìm kiếm giao dịch"
+							/>
+							<PrivateRoute path="/merchantweb/merchant/reports/daily-report"
+								component={DailyReport}
+								pageTitle="Báo cáo hàng ngày"
+							/>
 
-					</Switch>
-					<AuthVerify logOut={this.logOut} />
+						</Switch>
+						<AuthVerify logOut={this.logOut} />
 
-					<FooterComponent></FooterComponent>
-				</div>
-			</Container>
+						<FooterComponent></FooterComponent>
+					</div>
+				</Container >
 
+				<GenerateQRCodeModal isOpen={this.state.openModal} toggle={this.handleCloseModal} />
+			</>
 		);
 	}
 }
