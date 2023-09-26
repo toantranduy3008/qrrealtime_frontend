@@ -168,7 +168,7 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
         setDescription(ReportServices.formatTransferDescription(e.target.value))
     }
     const handleCloseModal = () => {
-        setAmount(0)
+        setAmount('')
         setDescription('')
         setImgSource('/merchantweb/images/napas.svg')
         isOpen = false

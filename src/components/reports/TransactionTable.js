@@ -29,6 +29,7 @@ export const TransactionTable = ({ rowHeader, data, handleOpenModal, page, pageS
                             <td>{item.acqName}</td>
                             <td>{item.accountNo}</td>
                             <td>{new Intl.NumberFormat('en-US').format(item.amount)}</td>
+                            <td>{item.ibftInfo}</td>
                             <td>
                                 {
                                     item.responseCode === "00" ?

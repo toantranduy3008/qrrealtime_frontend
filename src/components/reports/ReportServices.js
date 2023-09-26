@@ -43,8 +43,6 @@ class ReportServices {
     }
 
     formatTransferDescription(string) {
-        var re = /^[a-zA-Z!@#\$%\^\&*\)\(+=._-]{2,}$/g // regex here
-        // return this.removeAscent(string).replace(/^[a-zA-Z0-9 ]*$/, '')
         return this.removeAscent(string).replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
     }
 

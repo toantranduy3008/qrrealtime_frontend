@@ -37,7 +37,7 @@ function TransactionReport() {
 
   const sessionUser = AuthService.getCurrentUser()
   const { targetType, merchantName, branchName, cashierCode } = sessionUser
-  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Chi nhánh", "Quầy", "Ngân hàng phát lệnh", "Số tài khoản KH", "Số tiền", "Trạng thái"]
+  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Chi nhánh", "Quầy", "Ngân hàng phát lệnh", "Số tài khoản KH", "Số tiền", "Nội dung chuyển khoản", "Trạng thái"]
   const size = 10;
   const curr = new Date();
   curr.setDate(curr.getDate());
