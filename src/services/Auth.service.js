@@ -4,6 +4,7 @@ import authHeader from './auth-header';
 const API_URL = "./api/auth/";
 const API_USER_URL = "./api/user/";
 const API_ROLE_URL = "./api/role/";
+const API_CAPCHA = "/merchantweb/api/portal/captcha";
 
 class AuthService {
   login(username, password) {
@@ -28,6 +29,13 @@ class AuthService {
   getCurrentUser() {
     const user = JSON.parse(sessionStorage.getItem('user'));
     return user;
+  }
+
+  getCapCha() {
+    return window.fetch(API_CAPCHA, {
+      method: 'POST',
+    });
+
   }
 }
 

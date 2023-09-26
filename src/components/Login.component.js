@@ -26,8 +26,16 @@ export default class Login extends Component {
       username: "",
       password: "",
       loading: false,
-      message: ""
+      message: "",
+      code: "",
+      sourceCapcha: ""
     };
+  }
+
+  componentDidMount() {
+
+    this.handCallCapcha();
+
   }
 
   onChangeUsername(e) {
@@ -40,6 +48,32 @@ export default class Login extends Component {
     this.setState({
       password: e.target.value
     });
+  }
+
+  handCallCapcha() {
+    AuthService.getCapCha()
+      .then((response) => {
+        response.blob().then((decodedBlob) => {
+          const url = URL.createObjectURL(decodedBlob);
+          this.setState.sourceCapcha = url;
+          console.log(this.setState.sourceCapcha);
+        })
+      });
+
+
+  }
+
+  onChangeCode(e) {
+    this.setState({
+      code: e.target.code
+    });
+  }
+
+  genImage() {
+    return (<img style={{ marginLeft: "50px", height: "50px" }}
+      src={this.setState.sourceCapcha}
+      alt="pic"
+    />);
   }
 
   handleLogin(e) {
@@ -83,12 +117,6 @@ export default class Login extends Component {
     return (
       <div className="col-md-12">
         <div className="card card-container">
-          {/* <img
-            src="/images/avatar_2x.png"
-            alt="profile-img"
-            className="profile-img-card"
-          /> */}
-
           <Form
             onSubmit={this.handleLogin}
             ref={c => {
@@ -116,6 +144,19 @@ export default class Login extends Component {
                 value={this.state.password}
                 onChange={this.onChangePassword}
                 validations={[required]}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="code">Mã kiểm tra</label>
+              {/* {this.genImage()} */}
+
+              <Input
+                type="text"
+                className="form-control"
+                name="code"
+              // value={this.state.code}
+              // onChange={this.onChangeCode}
               />
             </div>
 
