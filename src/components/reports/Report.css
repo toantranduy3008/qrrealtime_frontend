@@ -28,3 +28,19 @@
     width: 200px;
     height: 200px;
 }
+
+.transaction-detail-modal-header {
+    background-color: #3860b2;
+}
+
+.modal-transaction-payment-notification {
+    display: flex;
+}
+
+.modal-transaction-payment-notification>p {
+    margin: 0;
+}
+
+.modal-transaction-payment-button {
+    text-align: right;
+}

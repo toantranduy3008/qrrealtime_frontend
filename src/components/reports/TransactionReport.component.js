@@ -86,7 +86,7 @@ function TransactionReport() {
 
   useEffect(() => {
     // Get list cashier
-    if (targetType !== 'CASHIER' && branchId) {
+    if (targetType !== 'CASHIER') {
       ReportServices.getWithoutPaginating(`/merchantweb/api/TblMerchantCashier/cashierByBranch?branchId=${branchId}`)
         .then(
           (res) => {
