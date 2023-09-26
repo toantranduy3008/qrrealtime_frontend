@@ -59,6 +59,7 @@ class App extends Component {
 
 	componentDidMount() {
 		const user = AuthService.getCurrentUser();
+		console.log('user', user)
 		if (user) {
 			this.setState({
 				openModal: false,
@@ -66,7 +67,8 @@ class App extends Component {
 				showAdminBoard: user.roles.some(r => arrAdminRoles.indexOf(r) >= 0),
 				showTechAdminBoard: user.roles.some(r => arrTechAdminRoles.indexOf(r) >= 0),
 				showBusinessRptBoard: user.roles.some(r => arrBusinessRptRoles.indexOf(r) >= 0),
-				showPaymentsHistoryBoard: user.roles.some(r => arrPaymentsHistoryRoles.indexOf(r) >= 0)
+				showPaymentsHistoryBoard: user.roles.some(r => arrPaymentsHistoryRoles.indexOf(r) >= 0),
+				userType: user.targetType
 			});
 		}
 
@@ -195,7 +197,7 @@ class App extends Component {
 											</DropdownMenu>
 										</UncontrolledDropdown>
 
-										<Button color="primary" onClick={this.handleOpenModal}>Tạo mã QR</Button>
+										{this.state.userType && (this.state.userType === 'PERSONAL' || this.state.userType === 'CASHIER') ? <Button color="primary" onClick={this.handleOpenModal}>Tạo mã QR</Button> : null}
 									</>
 								)}
 							</Nav>
@@ -207,11 +209,6 @@ class App extends Component {
 											{currentUser.username}
 										</DropdownToggle>
 										<DropdownMenu className="bg-light dropdown-menu-right">
-											{/* <DropdownItem className="bg-light">
-											<Link to={"/admin/profile"} className="nav-link">
-												Tài khoản
-											</Link>
-										</DropdownItem> */}
 											<DropdownItem className="bg-light">
 												<NavLink onClick={this.logOut}>
 													Logout
@@ -219,8 +216,6 @@ class App extends Component {
 											</DropdownItem>
 										</DropdownMenu>
 									</UncontrolledDropdown>
-
-
 								</Nav>
 							) : (
 								<Nav className="ml-auto" navbar>
