@@ -15,11 +15,13 @@ import AuthVerify from "./common/AuthVerify";
 import EventBus from "./common/EventBus";
 import ServiceAlert from "./common/ServiceAlert";
 import { GenerateQRCodeModal } from "./components/reports/ReportModal.component";
-
 import FooterComponent from "./components/Footer.component";
 import TransactionReport from "./components/reports/TransactionReport.component";
 import DailyReport from "./components/reports/DailyReport.component";
 import isThisHour from "date-fns/esm/isThisHour";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQrcode } from "@fortawesome/free-solid-svg-icons";
+
 const arrAdminRoles = ["ROOT", "ADMIN"];
 const arrTechAdminRoles = ["ROOT", "ADMIN", "SENIOR_OPERATOR"];
 const arrBusinessRptRoles = ["ROOT", "ADMIN", "SENIOR_OPERATOR", "KIEM_SOAT", "TRA_SOAT", "SENIOR_BUSINESS"];
@@ -59,7 +61,6 @@ class App extends Component {
 
 	componentDidMount() {
 		const user = AuthService.getCurrentUser();
-		console.log('user', user)
 		if (user) {
 			this.setState({
 				openModal: false,
@@ -164,7 +165,6 @@ class App extends Component {
 
 	render() {
 		const { currentUser, showTechAdminBoard } = this.state;
-		console.log('render', this.state.openModal)
 		return (
 			<>
 				<Container fluid>
@@ -197,7 +197,7 @@ class App extends Component {
 											</DropdownMenu>
 										</UncontrolledDropdown>
 
-										{this.state.userType && (this.state.userType === 'PERSONAL' || this.state.userType === 'CASHIER') ? <Button color="primary" onClick={this.handleOpenModal}>Tạo mã QR</Button> : null}
+										{this.state.userType && (this.state.userType === 'PERSONAL' || this.state.userType === 'CASHIER') ? <Button title="Mã QR" outline color="primary" onClick={this.handleOpenModal}><span><FontAwesomeIcon icon={faQrcode} /></span></Button> : null}
 									</>
 								)}
 							</Nav>

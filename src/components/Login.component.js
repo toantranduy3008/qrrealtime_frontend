@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-
 import AuthService from "../services/Auth.service";
 
 const required = value => {
@@ -28,14 +27,22 @@ export default class Login extends Component {
       loading: false,
       message: "",
       code: "",
-      sourceCapcha: ""
+      sourceCapcha: "/merchantweb/images/napas.svg"
     };
   }
 
   componentDidMount() {
-
-    this.handCallCapcha();
-
+    this.setState({ loading: true })
+    AuthService.getCapCha().then(
+      res => {
+        const url = URL.createObjectURL(res.data)
+        this.setState({ sourceCapcha: url })
+      }
+    ).catch((e) => {
+      throw new Error(e.message)
+    }).finally(
+      this.setState({ loading: false })
+    )
   }
 
   onChangeUsername(e) {
@@ -50,30 +57,10 @@ export default class Login extends Component {
     });
   }
 
-  handCallCapcha() {
-    AuthService.getCapCha()
-      .then((response) => {
-        response.blob().then((decodedBlob) => {
-          const url = URL.createObjectURL(decodedBlob);
-          this.setState.sourceCapcha = url;
-          console.log(this.setState.sourceCapcha);
-        })
-      });
-
-
-  }
-
   onChangeCode(e) {
     this.setState({
       code: e.target.code
     });
-  }
-
-  genImage() {
-    return (<img style={{ marginLeft: "50px", height: "50px" }}
-      src={this.setState.sourceCapcha}
-      alt="pic"
-    />);
   }
 
   handleLogin(e) {
@@ -114,6 +101,7 @@ export default class Login extends Component {
   }
 
   render() {
+    console.log('render 3', this.state.sourceCapcha)
     return (
       <div className="col-md-12">
         <div className="card card-container">
@@ -124,7 +112,7 @@ export default class Login extends Component {
             }}
           >
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="username">Tài khoản</label>
               <Input
                 type="text"
                 className="form-control"
@@ -136,7 +124,7 @@ export default class Login extends Component {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">Mật khẩu</label>
               <Input
                 type="password"
                 className="form-control"
@@ -147,16 +135,15 @@ export default class Login extends Component {
               />
             </div>
 
-            <div className="form-group">
+            <div className="form-group capcha-input">
               <label htmlFor="code">Mã kiểm tra</label>
-              {/* {this.genImage()} */}
-
+              <img src={this.state.sourceCapcha} alt="capcha" />
               <Input
                 type="text"
                 className="form-control"
                 name="code"
-              // value={this.state.code}
-              // onChange={this.onChangeCode}
+                value={this.state.code}
+                onChange={this.onChangeCode}
               />
             </div>
 

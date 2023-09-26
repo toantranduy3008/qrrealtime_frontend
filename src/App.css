@@ -61,3 +61,13 @@ ul>li>a,
 .navbar-nav .nav-link {
   color: black;
 }
+
+.capcha-input {
+  display: block;
+}
+
+.capcha-input>img {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  height: fit-content;
+}

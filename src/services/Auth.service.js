@@ -32,10 +32,15 @@ class AuthService {
   }
 
   getCapCha() {
-    return window.fetch(API_CAPCHA, {
-      method: 'POST',
-    });
+    // return window.fetch(API_CAPCHA, {
+    //   method: 'POST',
+    // });
 
+    return axios({
+      method: 'POST',
+      responseType: 'blob',
+      url: API_CAPCHA
+    })
   }
 }
 
