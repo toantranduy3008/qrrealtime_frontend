@@ -7,6 +7,7 @@ import '../../stylesheet/TableControl.css'
 import '../../stylesheet/TextControl.css'
 import { TransactionDetailModal } from './ReportModal.component';
 import { TransactionTable, TablePagination } from './TransactionTable';
+import { DefaultSpinner } from './ReportServices';
 
 function TransactionReport() {
   const selectBoxInitialvalue = [{ id: "", name: 'Tất cả' }]
@@ -102,7 +103,7 @@ function TransactionReport() {
     const paging = {
       page: page,
       size: size,
-      sort: 'id,asc'
+      sort: 'id,desc'
     }
 
     const filtersInput = {
@@ -132,11 +133,15 @@ function TransactionReport() {
     )
   }
   useEffect(() => {
+    getTransactions()
+  }, [page])
+
+  useEffect(() => {
     const interval = setInterval(() => {
       getTransactions()
     }, 20000);
     return () => clearInterval(interval);
-  }, [page])
+  }, [])
 
   const handleChangePage = (e) => { setPage(e.selected) }
   const handleChangeMerchant = (e) => { setMerchantId(e.target.value) }
@@ -166,8 +171,6 @@ function TransactionReport() {
   const handleChangeCardNumber = (e) => {
     setCardNo(e.target.value)
   }
-
-  if (loading) return <Spinner />
   return (
     <>
 
@@ -380,7 +383,7 @@ function TransactionReport() {
           </Col>
         </Row>
 
-        {totalPage === 0 ? <Alert color="warning">Không tìm thấy kết quả!</Alert> :
+        {loading ? <DefaultSpinner /> : totalPage === 0 ? <Alert color="warning">Không tìm thấy kết quả!</Alert> :
           <Row>
             <Col>
               <Card className='mt-0'>
@@ -389,9 +392,9 @@ function TransactionReport() {
                     <TablePagination totalPage={totalPage} handleChangePage={handleChangePage} />
                   </Col>
                 </Row>
-                <Suspense fallback={<Spinner />}>
-                  <TransactionTable rowHeader={rowHeader} data={data} handleOpenModal={handleOpenModal} page={page} pageSize={size} />
-                </Suspense>
+
+                <TransactionTable rowHeader={rowHeader} data={data} handleOpenModal={handleOpenModal} page={page} pageSize={size} />
+
               </Card>
             </Col >
           </Row >

@@ -4,7 +4,7 @@ import './Report.css'
 import ReportServices from './ReportServices'
 import ServiceAlert from '../../common/ServiceAlert';
 import { DefaultSpinner } from './ReportServices';
-
+import AuthService from '../../services/Auth.service';
 
 export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
     const { paymentReference, tnxStamp, merchantName, merchantBranchName, merchantCashierCode, acqName, cardNo, addInfo, amount, ibftInfo, responseCode } = data
@@ -123,11 +123,17 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
 }
 
 export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
-    const [amount, setAmount] = useState(0)
+    const [amount, setAmount] = useState('')
     const [description, setDescription] = useState('')
     const [imgSource, setImgSource] = useState('/merchantweb/images/napas.svg')
     const [loading, setLoading] = useState(false)
     const handleGenerateQRCode = () => {
+        const sessionUser = AuthService.getCurrentUser()
+        const { targetType } = sessionUser
+        if (targetType !== 'PERSONAL' && targetType !== 'CASHIER') {
+            ServiceAlert.error('Lỗi', 'Bạn không có quyền tạo mã QR.')
+            return
+        }
         if (!amount || !description || parseInt(amount, 10) === 0) {
             ServiceAlert.error('Lỗi', 'Không được để trống số tiền hoặc nội dung chuyển tiền.')
             return
@@ -138,8 +144,13 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
         ReportServices.genQRCode(`/merchantweb/api/VietQR/generateQRCodeCashier?amount=${qrAmount}&description=${description}`)
             .then(
                 res => {
-                    console.log(res)
-                    const url = URL.createObjectURL(res.data)
+                    const { status, data } = res
+                    if (status !== 200) {
+                        ServiceAlert.error('Lỗi', 'Tài khoản không có quyền tạo mã QR.')
+                        return
+                    }
+
+                    const url = URL.createObjectURL(data)
                     setImgSource(url)
                 }
             )
@@ -154,7 +165,7 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
         setAmount(ReportServices.formatStringToNumber(e.target.value))
     }
     const handleChangeDescription = (e) => {
-        setDescription(e.target.value)
+        setDescription(ReportServices.formatTransferDescription(e.target.value))
     }
     const handleCloseModal = () => {
         setAmount(0)
@@ -181,7 +192,7 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
                                 <FormGroup row style={{ alignItems: 'center' }}>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Số tiền</Label>
                                     <Col sm={8}>
-                                        <Input id="statusSelect" name="statusSelect" type="text" value={amount} onChange={handleChangeAmount} />
+                                        <Input placeholder='Số tiền' id="statusSelect" name="statusSelect" type="text" value={amount} onChange={handleChangeAmount} />
                                     </Col>
                                 </FormGroup>
                             </Col>

@@ -23,7 +23,7 @@ class ReportServices {
 
     exportExcel(inputFilter) {
         const { merchantId, branchId, cashierId, status, dateTimeBegin, dateTimeEnd, fromAmount, toAmount, cardNo, merchantName, branchName, cashierName, type } = inputFilter
-        const url = `/api/reports/exportdetail?merchantId=${merchantId}&branchId=${branchId}&cashierId=${cashierId}&status=${status}&dateTimeBegin=${dateTimeBegin}&dateTimeEnd=${dateTimeEnd}&type=${type}&merchantName=${merchantName}&branchName=${branchName}&cashierName=${cashierName}&fromAmount=${fromAmount}&toAmount=${toAmount}&cardNo=${cardNo}`
+        const url = `/merchantweb/api/reports/exportdetail?merchantId=${merchantId}&branchId=${branchId}&cashierId=${cashierId}&status=${status}&dateTimeBegin=${dateTimeBegin}&dateTimeEnd=${dateTimeEnd}&type=${type}&merchantName=${merchantName}&branchName=${branchName}&cashierName=${cashierName}&fromAmount=${fromAmount}&toAmount=${toAmount}&cardNo=${cardNo}`
         return axios({
             url: url, //your url
             method: 'GET',
@@ -42,12 +42,9 @@ class ReportServices {
         })
     }
 
-    // getCapCha() {
-    //     return window.fetch('', {
-    //         method: 'POST',
-    //     });
-
-    // }
+    formatTransferDescription(content) {
+        return content.replace(/[^\w]|_/g, '');
+    }
 }
 
 export default new ReportServices();

@@ -95,6 +95,8 @@ function TransactionReport() {
   }, [branchId])
 
   const getTransactions = () => {
+    const reportName = reportTypeId === 1 ? 'Báo cáo chi tiết' : 'Báo cáo tổng hợp'
+
     const filtersInput = {
       merchantId: merchantId,
       branchId: branchId,
@@ -119,7 +121,7 @@ function TransactionReport() {
             const fileNameHeader = "x-suggested-filename";
             const suggestedFileName = response.headers[fileNameHeader];
             const effectiveFileName = (suggestedFileName === undefined
-              ? "Payment.xlsx"
+              ? `${reportName}.xlsx`
               : suggestedFileName);
 
             FileDownload(data, effectiveFileName);
