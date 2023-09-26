@@ -180,11 +180,14 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
     }
 
     const handlePayment = () => {
-        axios.get('', { headers: authHeader() })
+        axios.get(`/merchantweb/api/PaymentQR/getPaymentStatus?orderCode=${description}`, { headers: authHeader() })
             .then(res => {
-
+                console.log('res', res)
+                const { status, data } = res
+                if (Object.keys(data).length > 0) setIsPayment(true)
             })
             .catch(e => {
+                console.log('error', e.response)
                 throw new Error(e.message)
             })
             .finally()
@@ -195,7 +198,7 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
             handlePayment()
         }, 3000);
         return () => clearInterval(interval);
-    }, [])
+    }, [isPayment])
     return (
         <>
             <Modal isOpen={isOpen} toggle={toggle} size='lg' centered scrollable={true} onClosed={handleCloseModal}>
