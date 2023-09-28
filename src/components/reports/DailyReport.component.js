@@ -175,7 +175,7 @@ function TransactionReport() {
             <Card className='mt-0'>
               <Row>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                     <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Merchant</Label>
                     <Col sm={8} xs={8} md={7} lg={8}>
                       <Input
@@ -194,7 +194,7 @@ function TransactionReport() {
                 {!personal ?
                   <>
                     <Col xs={12} sm={12} md={4} lg={4}>
-                      <FormGroup row style={{ alignItems: 'center' }}>
+                      <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                         <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Branch</Label>
                         <Col sm={8} xs={8} md={7} lg={8}>
                           <Input
@@ -211,8 +211,14 @@ function TransactionReport() {
                       </FormGroup>
                     </Col>
                     <Col xs={12} sm={12} md={4} lg={4}>
-                      <FormGroup row style={{ alignItems: 'center' }}>
-                        <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4} >Cashier</Label>
+                      <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
+                        <Label
+                          for="exampleEmail"
+                          sm={4} xs={4} md={5} lg={4}
+                        >
+                          Cashier
+                        </Label>
+
                         <Col sm={8} xs={8} md={7} lg={8}>
                           <Input
                             id="exampleSelect"
@@ -230,8 +236,13 @@ function TransactionReport() {
                   </> : <></>
                 }
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
-                    <Label for="fromDate" sm={4} xs={4} md={5} lg={4}>Từ ngày</Label>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
+                    <Label
+                      for="fromDate"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Từ ngày
+                    </Label>
                     <Col sm={8} xs={8} md={7} lg={8}>
                       <Input
                         id="fromDate"
@@ -245,8 +256,13 @@ function TransactionReport() {
                   </FormGroup>
                 </Col>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
-                    <Label for="toDate" sm={4} xs={4} md={5} lg={4}>Đến ngày</Label>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
+                    <Label
+                      for="toDate"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Đến ngày
+                    </Label>
                     <Col sm={8} xs={8} md={7} lg={8}>
                       <Input
                         id="toDate"
@@ -260,8 +276,13 @@ function TransactionReport() {
                   </FormGroup>
                 </Col>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
-                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Trạng thái</Label>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
+                    <Label
+                      for="exampleEmail"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Trạng thái
+                    </Label>
 
                     <Col sm={8} xs={8} md={7} lg={8}>
                       <Input
@@ -282,8 +303,14 @@ function TransactionReport() {
                 </Col>
 
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
-                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Số tiền: Từ</Label>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
+                    <Label
+                      for="exampleEmail"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Số tiền: Từ
+                    </Label>
+
                     <Col sm={8} xs={8} md={7} lg={8}>
                       <Input
                         id="fromAmount"
@@ -296,8 +323,14 @@ function TransactionReport() {
                   </FormGroup>
                 </Col>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
-                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Đến</Label>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
+                    <Label
+                      for="exampleEmail"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Đến
+                    </Label>
+
                     <Col sm={8} xs={8} md={7} lg={8}>
                       <Input
                         id="toAmount"
@@ -310,8 +343,14 @@ function TransactionReport() {
                   </FormGroup>
                 </Col>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
-                    <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Số tài khoản</Label>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
+                    <Label
+                      for="exampleEmail"
+                      sm={4} xs={4} md={5} lg={4}
+                    >
+                      Số tài khoản
+                    </Label>
+
                     <Col sm={8} xs={8} md={7} lg={8}>
                       <Input
                         id="fromAmount"
@@ -327,7 +366,7 @@ function TransactionReport() {
 
               <Row>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                     <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Loại báo cáo</Label>
                     <Col sm={8} xs={8} md={7} lg={8}>
                       <Input
@@ -347,7 +386,7 @@ function TransactionReport() {
                   </FormGroup>
                 </Col>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <Button color="success" onClick={handleExport}>Export <span><FontAwesomeIcon icon={faFileExcel} /></span></Button>
+                  <Button color="success" onClick={handleExport} className='btn-search-transaction'>Export <span><FontAwesomeIcon icon={faFileExcel} /></span></Button>
                 </Col>
               </Row>
             </Card>

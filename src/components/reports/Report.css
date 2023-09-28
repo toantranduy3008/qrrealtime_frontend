@@ -10,6 +10,7 @@
 
 .modal-input {
     font-weight: 500;
+    font-size: 14px;
 }
 
 .qr-container {
@@ -43,4 +44,34 @@
 
 .modal-transaction-payment-button {
     text-align: right;
+}
+
+.transaction-modal-form-group {
+    margin: 0;
+    font-size: 14px;
+}
+
+.transaction-modal-form-group>div>select {
+    font-size: 14px;
+}
+
+.transaction-modal-form-group>div>input {
+    font-size: 14px;
+}
+
+.transaction-modal-form-group>div>textarea {
+    font-size: 14px;
+}
+
+.btn-search-transaction {
+    margin-left: 15px;
+    font-size: 14px;
+}
+
+.pagination {
+    font-size: 14px;
+}
+
+.boder-bottom-solid {
+    border-bottom: 0.5px solid #e1e3e6;
 }

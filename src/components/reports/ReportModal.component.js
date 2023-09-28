@@ -6,7 +6,7 @@ import ServiceAlert from '../../common/ServiceAlert';
 import { DefaultSpinner } from './ReportServices';
 import AuthService from '../../services/Auth.service';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faCircle, faQrcode } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import authHeader from '../../services/auth-header';
 
@@ -14,13 +14,13 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
     const { paymentReference, tnxStamp, merchantName, merchantBranchName, merchantCashierCode, acqName, cardNo, addInfo, amount, ibftInfo, responseCode } = data
     return (
         <>
-            <Modal isOpen={isOpen} toggle={toggle} size='lg' centered scrollable={true}>
+            <Modal isOpen={isOpen} toggle={toggle} size='lg' centered scrollable={true} className='transaction-report-modal'>
                 <ModalHeader toggle={toggle} className='transaction-detail-modal-header'>Thông tin giao dịch</ModalHeader>
                 <ModalBody>
                     <Container fluid>
                         <Row>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Mã giao dịch</Label>
                                     <Col sm={8}>
                                         <Input className='modal-input' readonly id="statusSelect" name="statusSelect" type="text" value={paymentReference} disabled />
@@ -28,7 +28,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 </FormGroup>
                             </Col>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Thời gian giao dịch</Label>
                                     <Col sm={8}>
                                         <Input readonly id="statusSelect" name="statusSelect" type="text" value={tnxStamp} className='modal-input' disabled />
@@ -36,7 +36,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 </FormGroup>
                             </Col>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Merchant</Label>
                                     <Col sm={8}>
                                         <Input readonly id="statusSelect" name="statusSelect" type="text" value={merchantName} className='modal-input' disabled />
@@ -44,7 +44,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 </FormGroup>
                             </Col>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Chi nhánh</Label>
                                     <Col sm={8}>
                                         <Input readonly id="statusSelect" name="statusSelect" type="text" value={merchantBranchName} className='modal-input' disabled />
@@ -52,7 +52,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 </FormGroup>
                             </Col>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Quầy</Label>
                                     <Col sm={8}>
                                         <Input readonly id="statusSelect" name="statusSelect" type="text" value={merchantCashierCode} className='modal-input' disabled />
@@ -60,7 +60,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 </FormGroup>
                             </Col>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Ngân hàng PL</Label>
                                     <Col sm={8}>
                                         <Input readonly id="statusSelect" name="statusSelect" type="text" value={acqName} className='modal-input' disabled />
@@ -69,7 +69,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                             </Col>
 
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Tài khoản KH</Label>
                                     <Col sm={8}>
                                         <Input readonly id="statusSelect" name="statusSelect" type="text" value={cardNo} className='modal-input' disabled />
@@ -77,7 +77,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 </FormGroup>
                             </Col>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Tên KH</Label>
                                     <Col sm={8}>
                                         <Input readonly id="statusSelect" name="statusSelect" type="text" value={addInfo} className='modal-input' disabled />
@@ -85,7 +85,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 </FormGroup>
                             </Col>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Số tiền</Label>
                                     <Col sm={8}>
                                         <Input readonly id="statusSelect" name="statusSelect" type="text" value={new Intl.NumberFormat('en-US').format(amount)} className='modal-input' disabled />
@@ -93,7 +93,7 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 </FormGroup>
                             </Col>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Thông tin chuyển khoản</Label>
                                     <Col sm={8}>
                                         <Input readonly id="statusSelect" name="statusSelect" type="text" value={ibftInfo} className='modal-input' disabled />
@@ -101,19 +101,19 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
                                 </FormGroup>
                             </Col>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Trạng thái giao dịch</Label>
                                     <Col sm={8}>
-                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={responseCode === '00' ? '00 - Thành công' : responseCode === '68' ? '68 - Đang xử lý' : `${responseCode} - Không thành công`} className='modal-input' disabled />
+                                        <Input readonly id="statusSelect" name="statusSelect" type="text" value={responseCode === '00' ? 'Thành công' : responseCode === '68' ? 'Đang xử lý' : `${responseCode} - Không thành công`} className='modal-input' disabled />
                                     </Col>
                                 </FormGroup>
                             </Col>
                         </Row>
                     </Container>
                 </ModalBody>
-                <ModalFooter>
+                {/* <ModalFooter>
                     <Button color="secondary" onClick={toggle}>Đóng</Button>
-                </ModalFooter>
+                </ModalFooter> */}
             </Modal>
         </>
     )
@@ -122,11 +122,20 @@ export const TransactionDetailModal = ({ isOpen, toggle, data }) => {
 export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
     const randomString = ReportServices.generateRandomString(7)
     const [amount, setAmount] = useState('')
-    const [description, setDescription] = useState(randomString)
+    const [description, setDescription] = useState('')
     const [imgSource, setImgSource] = useState('/merchantweb/images/napas.svg')
     const [loading, setLoading] = useState(false)
     const [isPayment, setIsPayment] = useState(false)
     const [createdQR, setCreatedQR] = useState(false)
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            console.log(interval)
+            handlePayment()
+        }, 3000);
+        // return () => clearInterval(interval);
+    }, [])
+
     const handleGenerateQRCode = () => {
         const sessionUser = AuthService.getCurrentUser()
         const { targetType } = sessionUser
@@ -142,7 +151,7 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
         const qrAmount = ReportServices.formatNumberToString(amount)
         setLoading(true)
         setCreatedQR(false)
-        ReportServices.genQRCode(`/merchantweb/api/VietQR/generateQRCodeCashier?amount=${qrAmount}&description=${description}`)
+        ReportServices.genQRCode(`/merchantweb/api/VietQR/generateQRCodeCashier?amount=${qrAmount}&description=${description}&randomString=${randomString}`)
             .then(
                 res => {
                     const { status, data } = res
@@ -172,37 +181,36 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
     }
     const handleCloseModal = () => {
         setAmount('')
-        setDescription(randomString)
+        setDescription('')
         setImgSource('/merchantweb/images/napas.svg')
         setIsPayment(false)
         setCreatedQR(false)
         isOpen = false
+        clearInterval()
     }
 
     const handlePayment = () => {
-        axios.get(`/merchantweb/api/PaymentQR/getPaymentStatus?orderCode=${description}`, { headers: authHeader() })
-            .then(res => {
-                console.log('res', res)
-                const { status, data } = res
-                if (Object.keys(data).length > 0) setIsPayment(true)
-            })
-            .catch(e => {
-                console.log('error', e.response)
-                throw new Error(e.message)
-            })
-            .finally()
+        if (isOpen) {
+            axios.get(`/merchantweb/api/PaymentQR/getPaymentStatus?orderCode=${randomString}`, { headers: authHeader() })
+                .then(res => {
+                    console.log('res', res)
+                    const { data } = res
+                    if (Object.keys(data).length > 0) setIsPayment(true)
+                })
+                .catch(e => {
+                    console.log('error', e.response)
+                    throw new Error(e.message)
+                })
+                .finally()
+        }
+
     }
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            handlePayment()
-        }, 3000);
-        return () => clearInterval(interval);
-    }, [isPayment])
+
     return (
         <>
-            <Modal isOpen={isOpen} toggle={toggle} size='lg' centered scrollable={true} onClosed={handleCloseModal}>
-                <ModalHeader toggle={toggle}>Thông tin QR</ModalHeader>
+            <Modal isOpen={isOpen} toggle={toggle} size='md' centered scrollable={true} onClosed={handleCloseModal} className='transaction-report-modal'>
+                <ModalHeader toggle={toggle} className='transaction-detail-modal-header'>Thông tin QR</ModalHeader>
                 <ModalBody>
                     <Container fluid>
                         <Row>
@@ -215,7 +223,7 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
 
                         <Row>
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center', marginBottom: '15px' }} className='transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Số tiền</Label>
                                     <Col sm={8}>
                                         <Input placeholder='Số tiền' id="statusSelect" name="statusSelect" type="text" value={amount} onChange={handleChangeAmount} />
@@ -224,10 +232,10 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
                             </Col>
 
                             <Col xs={12} sm={12}>
-                                <FormGroup row style={{ alignItems: 'center' }}>
+                                <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                                     <Label for="exampleEmail" sm={3} className='label-model'>Nội dung chuyển tiền</Label>
                                     <Col sm={8}>
-                                        <Input placeholder='Nội dung chuyển tiền' id="statusSelect" name="statusSelect" type="textarea" value={description} onChange={handleChangeDescription} disabled readOnly />
+                                        <Input placeholder='Nội dung chuyển tiền' id="statusSelect" name="statusSelect" type="textarea" value={description} onChange={handleChangeDescription} maxLength={210} />
                                     </Col>
                                 </FormGroup>
                             </Col>

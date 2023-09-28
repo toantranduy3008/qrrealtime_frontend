@@ -1,5 +1,5 @@
-import React, { useEffect, useState, Suspense } from 'react'
-import { Container, Row, Col, Card, FormGroup, Label, Input, Button, Spinner, Alert } from 'reactstrap'
+import React, { useEffect, useState } from 'react'
+import { Container, Row, Col, Card, FormGroup, Label, Input, Button, Alert } from 'reactstrap'
 import format from 'date-fns/format';
 import AuthService from '../../services/Auth.service';
 import ReportServices from './ReportServices';
@@ -37,7 +37,7 @@ function TransactionReport() {
 
   const sessionUser = AuthService.getCurrentUser()
   const { targetType, merchantName, branchName, cashierCode } = sessionUser
-  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Chi nhánh", "Quầy", "Ngân hàng phát lệnh", "Số tài khoản KH", "Số tiền", "Nội dung chuyển khoản", "Trạng thái"]
+  const rowHeader = ["STT", "Mã giao dịch", "Thời gian giao dịch", "Chi nhánh", "Quầy", "Ngân hàng phát lệnh", "Số tài khoản KH", "Số tiền", "Thông tin chuyển khoản", "Trạng thái"]
   const size = 10;
   const curr = new Date();
   curr.setDate(curr.getDate());
@@ -175,13 +175,15 @@ function TransactionReport() {
     <>
 
       {/* Tìm kiếm */}
+
       <Container fluid>
+
         <Row>
           <Col>
             <Card className='mt-0'>
               <Row>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                     <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Merchant</Label>
                     <Col sm={8} xs={8} md={7} lg={8}>
                       <Input
@@ -200,7 +202,7 @@ function TransactionReport() {
                 {!personal ?
                   <>
                     <Col xs={12} sm={12} md={4} lg={4}>
-                      <FormGroup row style={{ alignItems: 'center' }}>
+                      <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                         <Label for="exampleEmail" sm={4} xs={4} md={5} lg={4}>Branch</Label>
                         <Col sm={8} xs={8} md={7} lg={8}>
                           <Input
@@ -217,7 +219,7 @@ function TransactionReport() {
                       </FormGroup>
                     </Col>
                     <Col xs={12} sm={12} md={4} lg={4}>
-                      <FormGroup row style={{ alignItems: 'center' }}>
+                      <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                         <Label
                           for="exampleEmail"
                           sm={4} xs={4} md={5} lg={4}
@@ -242,7 +244,7 @@ function TransactionReport() {
                   </> : <></>
                 }
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                     <Label
                       for="fromDate"
                       sm={4} xs={4} md={5} lg={4}
@@ -262,7 +264,7 @@ function TransactionReport() {
                   </FormGroup>
                 </Col>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                     <Label
                       for="toDate"
                       sm={4} xs={4} md={5} lg={4}
@@ -282,7 +284,7 @@ function TransactionReport() {
                   </FormGroup>
                 </Col>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                     <Label
                       for="exampleEmail"
                       sm={4} xs={4} md={5} lg={4}
@@ -309,7 +311,7 @@ function TransactionReport() {
                 </Col>
 
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                     <Label
                       for="exampleEmail"
                       sm={4} xs={4} md={5} lg={4}
@@ -329,7 +331,7 @@ function TransactionReport() {
                   </FormGroup>
                 </Col>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                     <Label
                       for="exampleEmail"
                       sm={4} xs={4} md={5} lg={4}
@@ -349,7 +351,7 @@ function TransactionReport() {
                   </FormGroup>
                 </Col>
                 <Col xs={12} sm={12} md={4} lg={4}>
-                  <FormGroup row style={{ alignItems: 'center' }}>
+                  <FormGroup row style={{ alignItems: 'center' }} className='transaction-modal-form-group'>
                     <Label
                       for="exampleEmail"
                       sm={4} xs={4} md={5} lg={4}
@@ -375,6 +377,7 @@ function TransactionReport() {
                   <Button
                     color="primary"
                     onClick={handleSearch}
+                    className='btn-search-transaction'
                   >
                     Tìm kiếm
                   </Button></Col>
@@ -400,7 +403,6 @@ function TransactionReport() {
           </Row >
         }
       </Container>
-
 
       <TransactionDetailModal isOpen={openModal} toggle={handleOpenModal} data={modalData} />
     </>
