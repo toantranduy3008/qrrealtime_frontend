@@ -7,11 +7,12 @@ const API_ROLE_URL = "./api/role/";
 const API_CAPCHA = "/merchantweb/api/portal/captcha";
 
 class AuthService {
-  login(username, password) {
+  login(username, password, captcha) {
     return axios
       .post(API_URL + "signin", {
         username,
-        password
+        password,
+        captcha
       })
       .then(response => {
         if (response.data.accessToken) {

@@ -20,6 +20,7 @@ export default class Login extends Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.onChangeUsername = this.onChangeUsername.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
+    this.onChangeCode = this.onChangeCode.bind(this);
 
     this.state = {
       username: "",
@@ -59,7 +60,7 @@ export default class Login extends Component {
 
   onChangeCode(e) {
     this.setState({
-      code: e.target.code
+      code: e.target.value
     });
   }
 
@@ -74,7 +75,7 @@ export default class Login extends Component {
     this.form.validateAll();
 
     if (this.checkBtn.context._errors.length === 0) {
-      AuthService.login(this.state.username, this.state.password).then(
+      AuthService.login(this.state.username, this.state.password, this.state.code).then(
         () => {
           this.props.history.push("/merchantweb/merchant/reports/transactions");
           window.location.reload();
@@ -86,11 +87,24 @@ export default class Login extends Component {
               error.response.data.message) ||
             error.message ||
             error.toString();
-
+          console.log('resMessage', error.response)
+          const errorStatus = error.response.status
+          console.log('resMessage', errorStatus, typeof errorStatus)
           this.setState({
             loading: false,
-            message: resMessage
+            message: errorStatus === 400 ? 'Sai mã capcha' : resMessage
           });
+
+          AuthService.getCapCha().then(
+            res => {
+              const url = URL.createObjectURL(res.data)
+              this.setState({ sourceCapcha: url })
+            }
+          ).catch((e) => {
+            throw new Error(e.message)
+          }).finally(
+            this.setState({ loading: false })
+          )
         }
       );
     } else {
