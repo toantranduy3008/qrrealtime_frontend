@@ -14,7 +14,7 @@ class ReportServices {
 
     formatStringToNumber(n) {
         // format number 1000000 to 1,234,567
-        return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        return n.toString().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     }
 
     formatNumberToString(s) {

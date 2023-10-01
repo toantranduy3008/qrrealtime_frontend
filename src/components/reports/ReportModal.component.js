@@ -127,6 +127,7 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
     const [isPayment, setIsPayment] = useState(false)
     const [createdQR, setCreatedQR] = useState(false)
     const [orderCode, setOrderCode] = useState('')
+    const [paymentAmount, setPaymentAmount] = useState('0')
     let intervalIdStorage = []
     useEffect(() => {
         const interval = setInterval(() => {
@@ -199,15 +200,15 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
         if (orderCode) {
             axios.get(`/merchantweb/api/PaymentQR/getPaymentStatus?orderCode=${orderCode}`, { headers: authHeader() })
                 .then(res => {
-                    console.log(1)
                     const { data } = res
                     if (Object.keys(data).length > 0) setIsPayment(true)
                     clearAllInterval(intervalIdStorage)
+                    console.log('payment amount', ReportServices.formatStringToNumber(data.amount))
+                    setPaymentAmount(ReportServices.formatStringToNumber(data.amount))
                     if (orderCode === data.orderCode) {
                         setTimeout(() => {
                             toggle()
-                            console.log(2)
-                        }, 5000)
+                        }, 20000)
                     }
                 })
                 .catch(e => {
@@ -225,6 +226,7 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
         setIsPayment(false)
         setCreatedQR(false)
         setOrderCode('')
+        setPaymentAmount('0')
     }
 
     const clearAllInterval = (list) => {
@@ -272,7 +274,7 @@ export const GenerateQRCodeModal = ({ isOpen, toggle }) => {
                                 <div className='modal-transaction-payment-notification'>
                                     {
                                         !createdQR ? null : isPayment ?
-                                            <><span><FontAwesomeIcon icon={faCheckCircle} color='green' /></span><p>Thanh toán thành công</p></> :
+                                            <><span><FontAwesomeIcon icon={faCheckCircle} color='green' /></span><p>Thanh toán thành công {paymentAmount}</p></> :
                                             <><span><FontAwesomeIcon icon={faCircle} color='#ffc107' fade /></span><p>Đang thanh toán...</p></>
                                     }
                                 </div>
