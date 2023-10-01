@@ -167,88 +167,88 @@ class App extends Component {
 		const { currentUser, showTechAdminBoard } = this.state;
 		return (
 			<>
-				<Container fluid>
-					<div>
-						<Navbar expand="md">
-							<div>
-								<Link to={"/merchantweb/merchant/reports/transactions"} className="navbar-brand">
-									<img src='/merchantweb/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
-								</Link>
-							</div>
+				{/* <Container fluid> */}
+				<div>
+					<Navbar expand="md" className="bg-light header-menu">
+						<div>
+							<Link to={"/merchantweb/merchant/reports/transactions"} className="navbar-brand">
+								<img src='/merchantweb/images/napas.svg' alt="Napas" style={{ width: "100%", maxWidth: "100px" }} />
+							</Link>
+						</div>
 
-							<Nav className="mr-auto" navbar>
-								{currentUser && (
-									<>
-										<UncontrolledDropdown nav inNavbar>
-											<DropdownToggle nav caret>
-												Báo cáo
-											</DropdownToggle>
-											<DropdownMenu className="bg-light">
-												<DropdownItem className="bg-light">
-													<Link to={"/merchantweb/merchant/reports/transactions"} className="nav-link">
-														Tìm kiếm giao dịch
-													</Link>
-												</DropdownItem>
-												<DropdownItem className="bg-light">
-													<Link to={"/merchantweb/merchant/reports/daily-report"} className="nav-link">
-														Báo cáo hàng ngày
-													</Link>
-												</DropdownItem>
-											</DropdownMenu>
-										</UncontrolledDropdown>
-
-										{this.state.userType && (this.state.userType === 'PERSONAL' || this.state.userType === 'CASHIER') ? <Button title="Mã QR" outline color="primary" onClick={this.handleOpenModal}><span><FontAwesomeIcon icon={faQrcode} /></span></Button> : null}
-									</>
-								)}
-							</Nav>
-
-							{currentUser ? (
-								<Nav className="ml-auto" navbar>
+						<Nav className="mr-auto" navbar>
+							{currentUser && (
+								<>
 									<UncontrolledDropdown nav inNavbar>
 										<DropdownToggle nav caret>
-											{currentUser.username}
+											Báo cáo
 										</DropdownToggle>
-										<DropdownMenu className="bg-light dropdown-menu-right">
+										<DropdownMenu className="bg-light">
 											<DropdownItem className="bg-light">
-												<NavLink onClick={this.logOut}>
-													Logout
-												</NavLink>
+												<Link to={"/merchantweb/merchant/reports/transactions"} className="nav-link">
+													Tìm kiếm giao dịch
+												</Link>
+											</DropdownItem>
+											<DropdownItem className="bg-light">
+												<Link to={"/merchantweb/merchant/reports/daily-report"} className="nav-link">
+													Báo cáo hàng ngày
+												</Link>
 											</DropdownItem>
 										</DropdownMenu>
 									</UncontrolledDropdown>
-								</Nav>
-							) : (
-								<Nav className="ml-auto" navbar>
-									<NavItem>
-										<Link to={"/login"} className="nav-link">
-											Login
-										</Link>
-									</NavItem>
-								</Nav>
+
+									{this.state.userType && (this.state.userType === 'PERSONAL' || this.state.userType === 'CASHIER') ? <Button title="Mã QR" outline color="primary" onClick={this.handleOpenModal}><span><FontAwesomeIcon icon={faQrcode} /></span></Button> : null}
+								</>
 							)}
-						</Navbar>
+						</Nav>
 
-						<Switch>
-							<PrivateRoute exact path={["/merchantweb/", "/merchantweb/home"]} component={Home} />
-							<Route exact path="/merchantweb/login" component={Login} />
-							<PrivateRoute exact path="/merchantweb/merchant/profile" component={Profile} />
+						{currentUser ? (
+							<Nav className="ml-auto" navbar>
+								<UncontrolledDropdown nav inNavbar>
+									<DropdownToggle nav caret>
+										{currentUser.username}
+									</DropdownToggle>
+									<DropdownMenu className="bg-light dropdown-menu-right">
+										<DropdownItem className="bg-light">
+											<NavLink onClick={this.logOut}>
+												Logout
+											</NavLink>
+										</DropdownItem>
+									</DropdownMenu>
+								</UncontrolledDropdown>
+							</Nav>
+						) : (
+							<Nav className="ml-auto" navbar>
+								<NavItem>
+									<Link to={"/login"} className="nav-link">
+										Login
+									</Link>
+								</NavItem>
+							</Nav>
+						)}
+					</Navbar>
+
+					<Switch>
+						<PrivateRoute exact path={["/merchantweb/", "/merchantweb/home"]} component={Home} />
+						<Route exact path="/merchantweb/login" component={Login} />
+						<PrivateRoute exact path="/merchantweb/merchant/profile" component={Profile} />
 
 
-							<PrivateRoute path="/merchantweb/merchant/reports/transactions"
-								component={TransactionReport}
-								pageTitle="Tìm kiếm giao dịch"
-							/>
-							<PrivateRoute path="/merchantweb/merchant/reports/daily-report"
-								component={DailyReport}
-								pageTitle="Báo cáo hàng ngày"
-							/>
+						<PrivateRoute path="/merchantweb/merchant/reports/transactions"
+							component={TransactionReport}
+							pageTitle="Tìm kiếm giao dịch"
+						/>
+						<PrivateRoute path="/merchantweb/merchant/reports/daily-report"
+							component={DailyReport}
+							pageTitle="Báo cáo hàng ngày"
+						/>
 
-						</Switch>
-						<AuthVerify logOut={this.logOut} />
+					</Switch>
+					<AuthVerify logOut={this.logOut} />
 
-						<FooterComponent></FooterComponent>
-					</div>
-				</Container >
+					<FooterComponent></FooterComponent>
+				</div>
+				{/* </Container > */}
 
 				<GenerateQRCodeModal isOpen={this.state.openModal} toggle={this.handleCloseModal} />
 			</>

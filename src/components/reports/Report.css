@@ -1,5 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
+
+h5 {
+    font-family: 'Quicksand', sans-serif;
+}
+
 .label-model {
-    margin-top: auto;
+    margin-top: 0;
 }
 
 .modal-input:disabled {
@@ -14,10 +21,10 @@
 }
 
 .qr-container {
-    border: 0.5px solid #eef0f3;
+    /* border: 0.5px solid #eef0f3; */
     margin-bottom: 15px;
-    width: 200px;
-    height: 200px;
+    /* width: 300px;
+    height: 350px; */
     background-color: transparent;
     display: flex;
     justify-content: center;
@@ -26,20 +33,28 @@
 }
 
 .qr-container img {
-    width: 200px;
-    height: 200px;
+    width: 175px;
+    height: 250px;
 }
 
 .transaction-detail-modal-header {
-    background-color: #3860b2;
+    padding: 10px !important;
+    background-color: #0B3F7E;
+    color: white;
 }
 
 .modal-transaction-payment-notification {
+    align-items: center;
     display: flex;
 }
 
 .modal-transaction-payment-notification>p {
+    font-size: 14px;
     margin: 0;
+}
+
+.modal-transaction-payment-notification>span {
+    padding-right: 5px;
 }
 
 .modal-transaction-payment-button {

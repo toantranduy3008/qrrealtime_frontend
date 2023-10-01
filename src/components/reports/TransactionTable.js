@@ -1,6 +1,7 @@
 import React from 'react'
 import { Table, Badge } from 'reactstrap'
 import ReactPaginate from 'react-paginate';
+import ReportServices from './ReportServices';
 
 export const TransactionTable = ({ rowHeader, data, handleOpenModal, page, pageSize }) => {
     return (
@@ -22,14 +23,14 @@ export const TransactionTable = ({ rowHeader, data, handleOpenModal, page, pageS
                     return (
                         <tr key={item.id}>
                             <th>{page * pageSize + index + 1}</th>
-                            <td style={{ cursor: "pointer", color: "blue" }} className="align-middle no-wrap-box" onClick={() => handleOpenModal(item)}>{item.paymentReference.substring(0, 10).concat('...')}</td>
+                            <td style={{ cursor: "pointer", color: "blue" }} className="align-middle no-wrap-box" onClick={() => handleOpenModal(item)}>{ReportServices.cutString(item.paymentReference, 10)}</td>
                             <td>{item.tnxStamp}</td>
-                            <td>{item.merchantBranchName}</td>
+                            <td>{ReportServices.cutString(item.merchantBranchName, 10)}</td>
                             <td>{item.merchantCashierCode}</td>
                             <td>{item.acqName}</td>
                             <td>{item.accountNo}</td>
                             <td>{new Intl.NumberFormat('en-US').format(item.amount)}</td>
-                            <td>{item.ibftInfo}</td>
+                            <td>{ReportServices.cutString(item.ibftInfo, 20)}</td>
                             <td>
                                 {
                                     item.responseCode === "00" ?

@@ -136,12 +136,12 @@ function TransactionReport() {
     getTransactions()
   }, [page])
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getTransactions()
-    }, 20000);
-    return () => clearInterval(interval);
-  }, [])
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     getTransactions()
+  //   }, 20000);
+  //   return () => clearInterval(interval);
+  // }, [])
 
   const handleChangePage = (e) => { setPage(e.selected) }
   const handleChangeMerchant = (e) => { setMerchantId(e.target.value) }
@@ -177,7 +177,6 @@ function TransactionReport() {
       {/* Tìm kiếm */}
 
       <Container fluid>
-
         <Row>
           <Col>
             <Card className='mt-0'>

@@ -385,7 +385,7 @@ function TransactionReport() {
                     </Col>
                   </FormGroup>
                 </Col>
-                <Col xs={12} sm={12} md={4} lg={4}>
+                <Col xs={12} sm={12} md={4} lg={4} style={{ display: 'flex', alignItems: 'center' }}>
                   <Button color="success" onClick={handleExport} className='btn-search-transaction'>Export <span><FontAwesomeIcon icon={faFileExcel} /></span></Button>
                 </Col>
               </Row>

@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap');
+
+* {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
 label {
   display: block;
   margin-top: 10px;
@@ -70,4 +76,11 @@ ul>li>a,
   width: 100%;
   margin-bottom: 0.5rem;
   height: fit-content;
+}
+
+.header-menu {
+  position: sticky !important;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 0.5px solid #17a2b8;
 }
